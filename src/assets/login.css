@@ -1,0 +1,24 @@
+/* Keyframe animation for moving up and shrinking */
+@keyframes moveUpAndShrink {
+  0% {
+    transform: translateY(0) scale(2); /* Start big */
+  }
+  100% {
+    transform: translateY(-100px) scale(0.8); /* Move up and shrink */
+  }
+}
+
+.logo {
+  transition: height 0.5s ease-in-out;
+  position: absolute;
+  top: 50%; /* Start in the middle vertically */
+  left: 50%;
+  transform: translate(-50%, -50%) scale(2); /* Start big */
+  height: auto; /* Set height dynamically based on content */
+}
+
+.logo.move-up {
+  animation: moveUpAndShrink 1s forwards;
+  top: 10%; /* Moves the logo to the top of the page after animation */
+  transform: translateX(-50%) scale(0.8); /* Shrink and center horizontally */
+}

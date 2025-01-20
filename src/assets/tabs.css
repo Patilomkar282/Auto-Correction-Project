@@ -1,0 +1,9 @@
+.MuiBox-root{
+    padding: 0px 0px 0px 0px !important;
+    background-color: #212529 !important;
+    margin: 0px 0px 0px 0px !important;
+}
+
+.bg-orange {
+    background-color: #FFA500; /* This is a standard orange color */
+}

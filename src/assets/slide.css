@@ -1,0 +1,35 @@
+/* Full page cover style */
+.full-page-cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    /* background-color: rgba(0, 0, 0, 0.8); Dark overlay */
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000;
+    transition: transform 1s ease-in-out;
+  }
+  
+  .full-page-cover h1 {
+    margin-bottom: 20px;
+  }
+  
+  .full-page-cover button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #ff5722;
+    border: none;
+    color: white;
+  }
+  
+  /* Slide-up animation */
+  .full-page-cover.slide-up {
+    transform: translateY(-100%); /* Slide the div up */
+  }
+  
