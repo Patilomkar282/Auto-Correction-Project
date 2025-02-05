@@ -41,6 +41,8 @@ export default function Home() {
     const [showProgress, setShowProgress] = useState(true);
     const [selectedTool, setSelectedTool] = useState();
     const [customReason, setCustomReason] = useState("");
+    const [tools, setTools] = useState([]);
+
 
 
     const Start = async () => {
@@ -244,8 +246,75 @@ export default function Home() {
             if (socket.readyState === 1) {
                 socket.close();
             }
+
+            
         }
     }, []);
+
+    useEffect(() => {
+        fetch("http://localhost:3006/Toolsvalue") // Replace with your backend URL
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Response from backend:", data);
+            const filteredTools = data.values.filter((tool) => tool.value === "True");
+            setTools(filteredTools);
+    
+            
+            const toolStatus = data.values.reduce((status, tool) => {
+              status[tool.name] = tool.value;
+              return status;
+            }, {});
+            console.log("Status value is:",toolStatus);
+            console.log("Tool2 value:",toolStatus.TOOL2)
+    
+          
+            if (toolStatus.TOOL2 === "True") {
+            
+              setPopMessage({
+                title: "Check Roughing Insert",
+                message: (
+                    <>
+                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch("http://localhost:3006/roughing"); setPopupVisible(false); closePopup}} style={{margin:"50px"}} >Changed</button>
+                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch(""); setPopupVisible(false)}}>Still OK!!</button>
+                    </>
+                )
+              });
+              setShowProgress(false);
+              setPopupVisible(true);
+            } else if (toolStatus.TOOL3 === "True") {
+              
+              setPopMessage({
+                title: "Check SemiFinish",
+                message: (
+                    <>
+                    <button  className="btn btn-danger" onClick={() => { fetch(""); setPopupVisible(false)}}>Changed</button>
+                    <button  className="btn btn-danger" onClick={() => { fetch(""); setPopupVisible(false)}}>Still OK!!</button>
+                    </>
+                )
+              });
+              setShowProgress(false);
+              setPopupVisible(true);
+            } else if (toolStatus.TOOL8 === "True") {
+           
+              setPopMessage({
+                title: "Check Insert Indexing",
+                message: (
+                    <>
+                    <button  className="btn btn-danger" onClick={() => { fetch(""); setPopupVisible(false)}}>Changed</button>
+                    <button  className="btn btn-danger" onClick={() => { fetch(""); setPopupVisible(false)}}>Still OK!!</button>
+                    </>
+                )
+              });
+              setShowProgress(false);
+              setPopupVisible(true);
+            }
+          })
+          .catch((error) => console.error("Error fetching data:", error));
+      });
+
+      const closePopup = () => {
+        setPopupVisible(false);
+      };
 
 
     const startMeasurement = async () => {
@@ -555,13 +624,21 @@ export default function Home() {
             <div className="container text-center dimmed-background ">
                 {/* <button onClick={togglePopup} className="btn btn-primary">Toggle Pop-up</button> */}
 
+                {/* <div>
+                {tools.map((tool, index) => (
+                    <div key={index} className="popup">
+                    <p>{tool.name} is Active!</p>
+                    </div>
+                ))}
+                </div> */}
+
 
                 {isPopupVisible && (
                     <>
                         <div className="custom-popup bg-dark text-white" >
                             <h5 className='mb-3' style={{ fontSize: "5rem" }}>{popMessage.title}</h5>
                             <p className='mb-3' style={{ fontSize: "1.5rem" }}>{popMessage.message}</p>
-                            {/* <button onClick={togglePopup} className="btn btn-secondary">Close</button> */}
+                            {/* <button onClick={closePopup} className="btn btn-secondary">Close</button> */}
                             {showProgress && <div className="progress" style={{ height: "1.5rem" }}>
                                 <div className="progress-bar progress-bar-striped bg-danger b-5" role="progressbar" style={{ width: `${Progress}%`, height: "100%" }} aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>}
