@@ -1,6 +1,7 @@
+import React from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
-import zIndex from '@mui/material/styles/zIndex';
+import PropTypes from 'prop-types';
 
 export default function BasicArea(props) {
   return (
@@ -9,13 +10,24 @@ export default function BasicArea(props) {
         className="text-center"
         series={[
           {
-            data: props.Readings, // Array of data points
+            data: props.Readings,
             curve: 'linear',
-            color: '#dc3545', // Line color for the data
+            color: '#dc3545', // Keep the line red
+            marker: { color: '#dc3545' }, // Ensure dots remain red
           },
         ]}
-        grid={{ stroke: 'white' }} // Grid line color
-        sx={() => ({
+        xAxis={[
+          {
+            data: Array.from({ length: 20 }, (_, i) => i), // Generates [0, 1, 2, ..., 19]
+          },
+        ]}
+
+        grid={{ stroke: 'white' }} 
+        sx={{
+          '& .MuiChartsPoint-root': {
+            fill: '#dc3545 !important', // Force red dots
+            stroke: '#dc3545 !important', // Ensure border is red
+          },
           [`.${axisClasses.root}`]: {
             [`.${axisClasses.tick}, .${axisClasses.line}`]: {
               stroke: '#FFFFFF',
@@ -26,27 +38,60 @@ export default function BasicArea(props) {
             },
           },
           backgroundColor: '#212529',
-        })}
+        }}
         annotations={[
           {
             type: 'line',
-            y: 62, // Y value for the reference line
-            color: 'white', // Line color
-            strokeDasharray: '5 5', // Dashed line style
-            strokeWidth: 10, // Line thickness
+            y: 61.2,
+            color: 'white',
+            strokeDasharray: '6 6',
+            strokeWidth: 2,
             label: {
-              text: 'Y = 62', // Label for the line
-              position: 'middle', // Position of the label (start, middle, or end)
+              text: '62.01',
+              position: 'end',
               style: {
-                fill: 'yellow', // Label text color
+                fill: 'yellow',
                 fontSize: '12px',
-                zIndex:-1 // Font size for the label
+              },
+            },
+          },
+          {
+            type: 'line',
+            y: 61.6,
+            color: 'white',
+            strokeDasharray: '6 6',
+            strokeWidth: 2,
+            label: {
+              text: '61.980',
+              position: 'end',
+              style: {
+                fill: 'yellow',
+                fontSize: '12px',
+              },
+            },
+          },
+          {
+            type: 'line',
+            y: 62.0,
+            color: 'white',
+            strokeDasharray: '6 6',
+            strokeWidth: 2,
+            label: {
+              text: '61.995',
+              position: 'end',
+              style: {
+                fill: 'yellow',
+                fontSize: '12px',
               },
             },
           },
         ]}
       />
+  
     </div>
   );
 }
 
+BasicArea.propTypes = {
+  Readings: PropTypes.array.isRequired, 
+};
