@@ -247,6 +247,23 @@ app.get("/Tool8", (req, res) => {
   });
 });
 
+app.get("/Toolsvalue", (req, res) => {
+  const sql = 'SELECT field_name AS name, value FROM Fields WHERE field_name IN ("TOOL2", "TOOL3", "TOOL8")';
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database query failed:", err.message);
+      return res.status(500).send("Database query failed");
+    }
+
+    res.status(200).json({ values: results });
+  });
+});
+
+
+
+
+
 app.post("/addReason", (req, res) => {
   const { reason } = req.body; // Get reason from request body
 
@@ -372,6 +389,19 @@ app.get("/Home", (req, res) => {
     res.status(200).send({ results });
   });
 });
+
+app.get("/roughing", (req, res) => {
+  const sql = `UPDATE Fields SET value = "True" WHERE field_name = "RoughingInsert";`;
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database test query failed:", err.message);
+      return res.status(505).send("Database test query failed");
+    }
+    res.status(200).send({ results });
+  });
+});
+
+
 
 
 // Start the server
