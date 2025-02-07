@@ -222,6 +222,20 @@ app.get("/Tool2", (req, res) => {
     }
     res.status(200).send({ results });
   });
+  console.log("finished")
+});
+
+app.get("/Tool2value", (req, res) => {
+  console.log("updating")
+  const sql = 'UPDATE Fields SET value = "False" WHERE field_name = "TOOL2"';
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database test query failed:", err.message);
+      return res.status(505).send("Database test query failed");
+    }
+    res.status(200).send({ results });
+  });
+  console.log("finished")
 });
 
 
@@ -390,16 +404,7 @@ app.get("/Home", (req, res) => {
   });
 });
 
-app.get("/roughing", (req, res) => {
-  const sql = `UPDATE Fields SET value = "True" WHERE field_name = "RoughingInsert";`;
-  connection.query(sql, (err, results) => {
-    if (err) {
-      console.error("Database test query failed:", err.message);
-      return res.status(505).send("Database test query failed");
-    }
-    res.status(200).send({ results });
-  });
-});
+
 
 
 
