@@ -119,7 +119,7 @@ useEffect(() => {
   { console.log("LSL",LSL,"USL",USL) }
   return (
     <Box sx={() => ({
-      bgcolor: 'background.paper', width: '100%',padding: "0px 0px 0px 0px",
+      bgcolor: 'background.paper',  width: '100%',padding: "0px 0px 0px 0px",
     })} >
       <AppBar position="static">
         <Tabs sx={() => ({ bgcolor: "#212529", color: "white", borderBlockColor: "white", [`& .MuiTabs-indicator`]: { bgcolor: "#dc3545" } })}
@@ -171,38 +171,42 @@ useEffect(() => {
       } else if (current_readings >= USL) {
         // If the reading is greater than or equal to USL, use the red background (bg-danger)
         return (
+          <div style={{position:"relative"}}>
           <span 
             className="badge text-dark bg-danger"
             style={{
               fontSize: "16px",
               width: "270px",
-              marginLeft: "-180px",
-              position: "relative",
-              left: "-10",
+              marginLeft: "100px",
+              position: "absolute",
+              left: "100px",
               fontWeight: "lighter",
               borderRadius: "30px"
             }}
           >
             CURRENT ID READING&nbsp;&nbsp;:&nbsp; {Math.round(current_readings * 1000) / 1000}
           </span>
+          </div>
         );
       } else {
         // If the reading is between LSL and USL, use the green background (bg-success)
         return (
+          <div style={{position:"relative"}}>
           <span 
             className="badge text-dark bg-success"
             style={{
               fontSize: "16px",
               width: "270px",
-              marginLeft: "-180px",
-              position: "relative",
-              left: "-10",
+              marginLeft: "-130px",
+              position: "absolute",
               fontWeight: "lighter",
-              borderRadius: "30px"
+              borderRadius: "30px",
+              marginBottom: "50px"
             }}
           >
             CURRENT ID READING&nbsp;&nbsp;:&nbsp; {Math.round(current_readings * 1000) / 1000}
           </span>
+          </div>
         );
       }
     })()}

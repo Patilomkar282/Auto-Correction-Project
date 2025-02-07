@@ -7,7 +7,7 @@ import FullWidthTabs from '../components/Tabs';
 // import { AppBar } from '@mui/material';
 import { AppContext } from '../AppContext';
 import React from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import { saveAs } from 'file-saver';
 import { red } from '@mui/material/colors';
@@ -21,6 +21,7 @@ export default function Home() {
     const { Page, setPage, userCredentials, setUserCredentials } = React.useContext(AppContext);
     setPage("Calibration");
     const [isPopupVisible, setPopupVisible] = useState(true);
+    const [mypopup, setmypopup] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [approvetool, setapprovetoll] = useState("");
     const [selectedValue, setSelectedValue] = useState(""); 
@@ -95,7 +96,7 @@ export default function Home() {
         const socket = new WebSocket('ws://localhost:3006/ws');
         socket.onmessage = async (event) => {
             const data = JSON.parse(event.data);
-            console.log(data);
+            //console.log(data);
             if (data.ZERO !== "True") {
                 setPopMessage({
                     title: "Zero Callibration",
@@ -255,7 +256,7 @@ export default function Home() {
         fetch("http://localhost:3006/Toolsvalue") // Replace with your backend URL
           .then((response) => response.json())
           .then((data) => {
-            console.log("Response from backend:", data);
+            //console.log("Response from backend:", data);
             const filteredTools = data.values.filter((tool) => tool.value === "True");
             setTools(filteredTools);
     
@@ -264,56 +265,55 @@ export default function Home() {
               status[tool.name] = tool.value;
               return status;
             }, {});
-            console.log("Status value is:",toolStatus);
-            console.log("Tool2 value:",toolStatus.TOOL2)
+            // console.log("Status value is:",toolStatus);
+            // console.log("Tool2 value:",toolStatus.TOOL2)
     
           
             if (toolStatus.TOOL2 === "True") {
-            
+                setmypopup(true);
               setPopMessage({
                 title: "Check Roughing Insert",
                 message: (
                     <>
-                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch("http://localhost:3006/roughing"); setPopupVisible(false); closePopup}} style={{margin:"50px"}} >Changed</button>
-                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch(""); setPopupVisible(false)}}>Still OK!!</button>
+                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch("http://localhost:3006/TOOL2"); setmypopup(false); closePopup}} style={{margin:"50px"}} >Changed</button>
+                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch(""); setmypopup(false);}}>Still OK!!</button>
                     </>
                 )
               });
               setShowProgress(false);
-              setPopupVisible(true);
-            } else if (toolStatus.TOOL3 === "True") {
               
+            } else if (toolStatus.TOOL3 === "True") {
+                setmypopup(true);
               setPopMessage({
                 title: "Check SemiFinish",
                 message: (
                     <>
-                    <button  className="btn btn-danger" onClick={() => { fetch(""); setPopupVisible(false)}}>Changed</button>
-                    <button  className="btn btn-danger" onClick={() => { fetch(""); setPopupVisible(false)}}>Still OK!!</button>
+                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch("http://localhost:3006/Tool3"); setmypopup(false);}} style={{margin:"50px"}}>Changed</button>
+                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch(""); setmypopup(false);}}>Still OK!!</button>
                     </>
                 )
               });
               setShowProgress(false);
-              setPopupVisible(true);
             } else if (toolStatus.TOOL8 === "True") {
-           
+                setmypopup(true);
               setPopMessage({
                 title: "Check Insert Indexing",
                 message: (
                     <>
-                    <button  className="btn btn-danger" onClick={() => { fetch(""); setPopupVisible(false)}}>Changed</button>
-                    <button  className="btn btn-danger" onClick={() => { fetch(""); setPopupVisible(false)}}>Still OK!!</button>
+                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch("http://localhost:3006/Tool8"); setmypopup(false);}} style={{margin:"50px"}}>Changed</button>
+                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch(""); setmypopup(false);}}>Still OK!!</button>
                     </>
                 )
               });
               setShowProgress(false);
-              setPopupVisible(true);
             }
           })
           .catch((error) => console.error("Error fetching data:", error));
-      });
+    }, []);
 
       const closePopup = () => {
         setPopupVisible(false);
+        //fetch("http://localhost:3006/TOOL2value")
       };
 
 
@@ -513,9 +513,6 @@ export default function Home() {
 
     // }
 
-    const handlesubmitreason = () => {
-        alert("Add data to DB");
-    }
     const handleapprove =  async () => {
         if (!approvetool) {
             alert("Please select a reason.");
@@ -543,16 +540,20 @@ export default function Home() {
                 body: JSON.stringify({
                     reason: approvetool,
                 }),
+
             });
+            console.log("Omkar1")
     
-            const data = await response.json();
+            const data =await response.json();
+            console.log("Omkar2")
+            console.log(data)
             if (response.ok) {
                 setpopupvisiblemsg(false);
             } else {
                 alert("Failed to add reason: " + data.message);
             }
         } catch (error) {
-            console.error("Error:", error);
+            console.error("omkar:", error);
             alert("Error adding reason.");
         }
        
@@ -632,6 +633,20 @@ export default function Home() {
                 ))}
                 </div> */}
 
+                {mypopup && (
+                    <>
+                        <div className="custom-popup bg-dark text-white" >
+                            <h5 className='mb-3' style={{ fontSize: "2rem" }}>{popMessage.title}</h5>
+                            <p className='mb-3' style={{ fontSize: "0.5rem" }}>{popMessage.message}</p>
+                            {/* <button onClick={closePopup} className="btn btn-secondary">Close</button> */}
+                            {showProgress && <div className="progress" style={{ height: "1.5rem" }}>
+                                <div className="progress-bar progress-bar-striped bg-danger b-5" role="progressbar" style={{ width: `${Progress}%`, height: "100%" }} aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>}
+                        </div>
+                        <div className="backdrop"></div>
+                    </>
+                )}
+
 
                 {isPopupVisible && (
                     <>
@@ -661,7 +676,7 @@ export default function Home() {
             {/* {ID_Readings && <Chart Readings={ID_Readings}></Chart>} */}
             {/* {OD_Readings && <Chart Readings={OD_Readings}></Chart>}       */}
             {Success && <FullWidthTabs width="fluid" height="" id_readings={ID_Readings} od_readings={OD_Readings} />}
-            <div style={{ display: "flex",marginLeft:"340px", justifyContent: "center", gap: "20px", marginTop: "-50px", position:"absolute" }}>
+            <div style={{ display: "flex", marginLeft: "-150px", justifyContent: "center", gap: "20px", marginTop: "-40px" }}>
             <button className='text-center text-dark pb-3 mb-0'
     style={{
       height: "32px",
@@ -673,7 +688,7 @@ export default function Home() {
       borderRadius: "20px",
       cursor: "pointer",
       fontSize: "14px",
-     
+      position:"absolute",
       textAlign: "center",
     }}
     onClick={handlePopupVisibility}
@@ -684,6 +699,7 @@ export default function Home() {
   <button className='text-center text-dark pb-3 mb-0'
     style={{
       height: "32px",
+      width: "125px",
       padding: "5px 15px",
       backgroundColor: "#DC3545",
       color: "black",
@@ -693,12 +709,14 @@ export default function Home() {
       fontSize: "14px",
       fontWeight: "500",
       textAlign: "center",
+      position:"absolute",
+      marginLeft: "350px"
     }}
     onClick={handleAddReasons}
   >
     ADD REASONS
   </button>
-            </div>
+</div>
             {ispopupvisiblemsg && (
                 <div
                     style={{
