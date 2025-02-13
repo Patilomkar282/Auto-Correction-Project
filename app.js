@@ -215,6 +215,7 @@ app.get("/Index", (req, res) => {
 app.get("/Tool2", (req, res) => {
   console.log("updating")
   const sql = 'UPDATE Fields SET value = "True" WHERE field_name = "RoughingInsert"';
+  
   connection.query(sql, (err, results) => {
     if (err) {
       console.error("Database test query failed:", err.message);
@@ -224,6 +225,121 @@ app.get("/Tool2", (req, res) => {
   });
   console.log("finished")
 });
+app.get("/updateTool2", (req, res) => {
+  console.log("Updating TOOL2 and RoughingInsert...");
+
+  const updateTool2 = `UPDATE Fields SET value = "False" WHERE field_name = "TOOL2"`;
+  const updateRoughingInsert = `UPDATE Fields SET value = "True" WHERE field_name = "RoughingInsert"`;
+
+  connection.query(updateTool2, (err, result1) => {
+    if (err) {
+      console.error("Failed to update TOOL2:", err.message);
+      return res.status(500).send("Failed to update TOOL2");
+    }
+
+    connection.query(updateRoughingInsert, (err, result2) => {
+      if (err) {
+        console.error("Failed to update RoughingInsert:", err.message);
+        return res.status(500).send("Failed to update RoughingInsert");
+      }
+
+      console.log("Finished updating TOOL2 and RoughingInsert.");
+      res.status(200).send({ message: "Tool2 and RoughingInsert updated successfully" });
+    });
+  });
+});
+
+
+app.get("/updateTool3", (req, res) => {
+  console.log("Updating TOOL2 and RoughingInsert...");
+
+  const updateTool2 = `UPDATE Fields SET value = "False" WHERE field_name = "TOOL3"`;
+  const updateRoughingInsert = `UPDATE Fields SET value = "True" WHERE field_name = "SemiFinish"`;
+
+  connection.query(updateTool2, (err, result1) => {
+    if (err) {
+      console.error("Failed to update TOOL2:", err.message);
+      return res.status(500).send("Failed to update TOOL2");
+    }
+
+    connection.query(updateRoughingInsert, (err, result2) => {
+      if (err) {
+        console.error("Failed to update RoughingInsert:", err.message);
+        return res.status(500).send("Failed to update RoughingInsert");
+      }
+
+      console.log("Finished updating TOOL2 and RoughingInsert.");
+      res.status(200).send({ message: "Tool2 and RoughingInsert updated successfully" });
+    });
+  });
+});
+
+
+app.get("/updateTool8", (req, res) => {
+  console.log("Updating TOOL2 and RoughingInsert...");
+
+  const updateTool2 = `UPDATE Fields SET value = "False" WHERE field_name = "TOOL8"`;
+  const updateRoughingInsert = `UPDATE Fields SET value = "True" WHERE field_name = "INSERT_INDEXING"`;
+
+  connection.query(updateTool2, (err, result1) => {
+    if (err) {
+      console.error("Failed to update TOOL2:", err.message);
+      return res.status(500).send("Failed to update TOOL2");
+    }
+
+    connection.query(updateRoughingInsert, (err, result2) => {
+      if (err) {
+        console.error("Failed to update RoughingInsert:", err.message);
+        return res.status(500).send("Failed to update RoughingInsert");
+      }
+
+      console.log("Finished updating TOOL2 and RoughingInsert.");
+      res.status(200).send({ message: "Tool2 and RoughingInsert updated successfully" });
+    });
+  });
+});
+
+app.get("/stillokTool2", (req, res) => {
+  const sql = 'UPDATE Fields SET value = "False" WHERE field_name = "TOOL2"';
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database test query failed:", err.message);
+      return res.status(505).send("Database test query failed");
+    }
+    res.status(200).send({ results });
+  });
+});
+
+app.get("/stillokTool3", (req, res) => {
+  const sql = 'UPDATE Fields SET value = "False" WHERE field_name = "TOOL3"';
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database test query failed:", err.message);
+      return res.status(505).send("Database test query failed");
+    }
+    res.status(200).send({ results });
+  });
+});
+
+
+app.get("/stillokTool8", (req, res) => {
+  const sql = 'UPDATE Fields SET value = "False" WHERE field_name = "TOOL8"';
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database test query failed:", err.message);
+      return res.status(505).send("Database test query failed");
+    }
+    res.status(200).send({ results });
+  });
+});
+
+
+
+
+
+
+
+
 
 app.get("/Tool2value", (req, res) => {
   console.log("updating")
