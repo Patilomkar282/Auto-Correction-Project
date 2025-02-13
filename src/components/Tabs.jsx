@@ -157,6 +157,7 @@ useEffect(() => {
             style={{
               fontSize: "16px",
               width: "270px",
+              marginTop:"-20px",
               marginLeft: "-180px",
               position: "relative",
               left: "-10",
@@ -177,6 +178,7 @@ useEffect(() => {
             style={{
               fontSize: "16px",
               width: "270px",
+              marginTop:"-20px",
               marginLeft: "100px",
               position: "absolute",
               left: "100px",
@@ -197,6 +199,7 @@ useEffect(() => {
             style={{
               fontSize: "16px",
               width: "270px",
+              marginTop:"-20px",
               marginLeft: "-130px",
               position: "absolute",
               fontWeight: "lighter",

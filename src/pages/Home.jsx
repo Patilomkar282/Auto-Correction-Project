@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-constant-condition */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import '../assets/pop.css';
 
 import FullWidthTabs from '../components/Tabs';
@@ -21,8 +21,11 @@ export default function Home() {
     const { Page, setPage, userCredentials, setUserCredentials } = React.useContext(AppContext);
     setPage("Calibration");
     const [isPopupVisible, setPopupVisible] = useState(true);
+    const [popupType, setPopupType] = useState(""); // "change_tool" or "add_reason"
+
     const [mypopup, setmypopup] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [prevToolStatus, setPrevToolStatus] = useState(null);
     const [approvetool, setapprovetoll] = useState("");
     const [selectedValue, setSelectedValue] = useState(""); 
     const [customOption, setCustomOption] = useState(""); 
@@ -43,6 +46,7 @@ export default function Home() {
     const [selectedTool, setSelectedTool] = useState();
     const [customReason, setCustomReason] = useState("");
     const [tools, setTools] = useState([]);
+    const prevToolStatusRef = useRef({});
 
 
 
@@ -253,67 +257,110 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:3006/Toolsvalue") // Replace with your backend URL
-          .then((response) => response.json())
-          .then((data) => {
-            //console.log("Response from backend:", data);
-            const filteredTools = data.values.filter((tool) => tool.value === "True");
-            setTools(filteredTools);
+        setShowProgress(false)
+        const ws = new WebSocket("ws://localhost:3006/ws"); // Connect to WebSocket server
     
-            
-            const toolStatus = data.values.reduce((status, tool) => {
-              status[tool.name] = tool.value;
-              return status;
-            }, {});
-            // console.log("Status value is:",toolStatus);
-            // console.log("Tool2 value:",toolStatus.TOOL2)
+        ws.onmessage = (event) => {
+          const toolStatus = JSON.parse(event.data);
     
-          
+          if (JSON.stringify(toolStatus) !== JSON.stringify(prevToolStatusRef.current)) {
+            prevToolStatusRef.current = toolStatus;
+    
+            // Handle popup conditions
             if (toolStatus.TOOL2 === "True") {
-                setmypopup(true);
+              setmypopup(true);
               setPopMessage({
                 title: "Check Roughing Insert",
                 message: (
-                    <>
-                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch("http://localhost:3006/TOOL2"); setmypopup(false); closePopup}} style={{margin:"50px"}} >Changed</button>
-                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch(""); setmypopup(false);}}>Still OK!!</button>
-                    </>
-                )
+                  <>
+                    <button
+                      className="btn btn-danger mr-[20px]"
+                      onClick={() => {
+                        fetch("http://localhost:3006/updateTool2");
+                        setmypopup(false);
+                      }}
+                      style={{ margin: "50px" }}
+                    >
+                      Changed
+                    </button>
+                    <button
+                      className="btn btn-danger mr-[20px]"
+                      onClick={() => {
+                        fetch("http://localhost:3006/stillokTool2");
+                        setmypopup(false);
+                      }}
+                    >
+                      Still OK!!
+                    </button>
+                  </>
+                ),
               });
-              setShowProgress(false);
-              
             } else if (toolStatus.TOOL3 === "True") {
-                setmypopup(true);
+              setmypopup(true);
               setPopMessage({
                 title: "Check SemiFinish",
                 message: (
-                    <>
-                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch("http://localhost:3006/Tool3"); setmypopup(false);}} style={{margin:"50px"}}>Changed</button>
-                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch(""); setmypopup(false);}}>Still OK!!</button>
-                    </>
-                )
+                  <>
+                    <button
+                      className="btn btn-danger mr-[20px]"
+                      onClick={() => {
+                        fetch("http://localhost:3006/updateTool3");
+                        setmypopup(false);
+                      }}
+                      style={{ margin: "50px" }}
+                    >
+                      Changed
+                    </button>
+                    <button
+                      className="btn btn-danger mr-[20px]"
+                      onClick={() => {
+                        fetch("http://localhost:3006/stillokTool3");
+                        setmypopup(false);
+                      }}
+                    >
+                      Still OK!!
+                    </button>
+                  </>
+                ),
               });
-              setShowProgress(false);
             } else if (toolStatus.TOOL8 === "True") {
-                setmypopup(true);
+              setmypopup(true);
               setPopMessage({
                 title: "Check Insert Indexing",
                 message: (
-                    <>
-                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch("http://localhost:3006/Tool8"); setmypopup(false);}} style={{margin:"50px"}}>Changed</button>
-                    <button  className="btn btn-danger mr-[20px]" onClick={() => { fetch(""); setmypopup(false);}}>Still OK!!</button>
-                    </>
-                )
+                  <>
+                    <button
+                      className="btn btn-danger mr-[20px]"
+                      onClick={() => {
+                        fetch("http://localhost:3006/updateTool8");
+                        setmypopup(false);
+                      }}
+                      style={{ margin: "50px" }}
+                    >
+                      Changed
+                    </button>
+                    <button
+                      className="btn btn-danger mr-[20px]"
+                      onClick={() => {
+                        fetch("http://localhost:3006/stillokTool8");
+                        setmypopup(false);
+                      }}
+                    >
+                      Still OK!!
+                    </button>
+                  </>
+                ),
               });
-              setShowProgress(false);
             }
-          })
-          .catch((error) => console.error("Error fetching data:", error));
-    }, []);
+          }
+        };
+    
+        return () => ws.close(); // Cleanup WebSocket connection on unmount
+      }, []);
 
       const closePopup = () => {
         setPopupVisible(false);
-        //fetch("http://localhost:3006/TOOL2value")
+        // fetch("http://localhost:3006/TOOL2value")
       };
 
 
@@ -330,6 +377,7 @@ export default function Home() {
         setIsDropdownOpen(!isDropdownOpen);
     };
     const handlePopupVisibility = () => {
+        setPopupType("change_tool");
         setpopupvisiblemsg(true); // Show the popup
         setPopMessage({
             title: "Change Tool",
@@ -389,6 +437,7 @@ export default function Home() {
 
 
     const handleAddReasons = () => {
+        setPopupType("add_reason");
         setpopupvisiblemsg(true); // Show the popup
     
         setPopMessage({
@@ -457,6 +506,7 @@ export default function Home() {
     };
 
     const updatePopMessage = (selectedValue) => {
+    setPopupType("add_reason");
     setPopMessage({
         title: "Add Reason",
         message: (
@@ -519,43 +569,41 @@ export default function Home() {
             return;
         }
 
+       
+    if (popupType === "change_tool") {
+      
         if (approvetool === "tool2") {
             updatetool2();
-        }
-        else if (approvetool === "tool3") {
+        } else if (approvetool === "tool3") {
             updatetool3();
-
-        }
-        else if (approvetool === "tool8") {
+        } else if (approvetool === "tool8") {
             updatetool8();
-
         }
 
-        try {
-            const response =  await fetch("http://localhost:3006/addReason", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    reason: approvetool,
-                }),
+        setpopupvisiblemsg(false);
+        return; 
+    }
 
+    if (popupType === "add_reason") {
+        
+        try {
+            const response = await fetch("http://localhost:3006/addReason", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reason: approvetool }),
             });
-            console.log("Omkar1")
-    
-            const data =await response.json();
-            console.log("Omkar2")
-            console.log(data)
+
+            const data = await response.json();
             if (response.ok) {
                 setpopupvisiblemsg(false);
             } else {
                 alert("Failed to add reason: " + data.message);
             }
         } catch (error) {
-            console.error("omkar:", error);
+            console.error("Error:", error);
             alert("Error adding reason.");
         }
+    }
        
     
         
@@ -580,26 +628,7 @@ export default function Home() {
         await fetch("http://localhost:3006/Tool8");
 
     };
-    const addreason1 = async () => {
-        await fetch("http://localhost:3006/reason1");
-
-    };
-    const addreason2 = async () => {
-        await fetch("http://localhost:3006/reason2");
-
-    };
-    const addreason3 = async () => {
-        await fetch("http://localhost:3006/reason3");
-
-    };
-    const addreason4 = async () => {
-        await fetch("http://localhost:3006/reason4");
-
-    };
-    const addcustom = async () => {
-        await fetch("http://localhost:3006/custom");
-
-    };
+  
     const arrayToCSV = (array, headers) => {
         const csvRows = [headers.join(',')];
         array.forEach(row => {
@@ -635,7 +664,7 @@ export default function Home() {
 
                 {mypopup && (
                     <>
-                        <div className="custom-popup bg-dark text-white" >
+                        <div className="custom-popup bg-dark text-white" style={{zIndex:10}}>
                             <h5 className='mb-3' style={{ fontSize: "2rem" }}>{popMessage.title}</h5>
                             <p className='mb-3' style={{ fontSize: "0.5rem" }}>{popMessage.message}</p>
                             {/* <button onClick={closePopup} className="btn btn-secondary">Close</button> */}
@@ -781,12 +810,3 @@ export default function Home() {
 
 
 }
-
-
-
-
-
-
-
-
-
