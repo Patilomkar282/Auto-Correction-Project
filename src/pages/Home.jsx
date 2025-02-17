@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-constant-condition */
 import { useEffect, useState, useRef } from 'react';
+
 import '../assets/pop.css';
 
 import FullWidthTabs from '../components/Tabs';
@@ -257,7 +258,7 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        setShowProgress(false);
+        setShowProgress(false)
         const ws = new WebSocket("ws://localhost:3006/ws"); // Connect to WebSocket server
     
         ws.onmessage = (event) => {
@@ -664,7 +665,7 @@ export default function Home() {
 
                 {mypopup && (
                     <>
-                        <div className="custom-popup bg-dark text-white" style={{zIndex:"1"}}>
+                        <div className="custom-popup bg-dark text-white" style={{zIndex:10}}>
                             <h5 className='mb-3' style={{ fontSize: "2rem" }}>{popMessage.title}</h5>
                             <p className='mb-3' style={{ fontSize: "0.5rem" }}>{popMessage.message}</p>
                             {/* <button onClick={closePopup} className="btn btn-secondary">Close</button> */}
@@ -810,12 +811,3 @@ export default function Home() {
 
 
 }
-
-
-
-
-
-
-
-
-

@@ -3,6 +3,7 @@ import SideBar from './components/SideBar'
 
 import React from 'react'
 import Home from './pages/Home'
+import Oee from './pages/Oee'
 import SetUpMode from './pages/SetUpMode'
 import { AppContext } from './AppContext'
 import Table from './pages/Table'
@@ -60,6 +61,7 @@ function App() {
                   <Route path="/Calibration" element={<Home />} />
                   <Route path="/table" element={<Table />} />
                   <Route path="/SetUpMode" element={<SetUpMode/>}/>
+                  <Route path="/oee" element={<Oee />} />
                 </Routes> 
               </main>
               <Footer />

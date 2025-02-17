@@ -4,7 +4,10 @@ import calicon from "../assets/spanner1.svg"
 import React from 'react'
 import { AppContext } from '../AppContext'
 import {Link} from "react-router-dom"
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 import { useNavigate } from 'react-router-dom';
+
 export default function SideBar() {
   const navigate = useNavigate();
   const { Page, setPage, userCredentials ,setUserCredentials} = React.useContext(AppContext);
@@ -34,6 +37,13 @@ export default function SideBar() {
             CALLIBRATION
           </Link>
         </li>
+        <li className="nav-item">
+         <Link to="/oee" className={`nav-link text-white ${Page === "oee" ? "active bg-danger" : ""}`} {...{ onClick: () => setPage("oee") }} >
+          <i className="fa-solid fa-chart-simple me-2"></i>
+          OEE
+          </Link>
+        </li>
+
         <li>
           <Link to="/SetUpMode" className={`nav-link text-white ${Page === "SetUpMode" ? "active bg-danger" : ""}`} {...{ onClick: () => setPage("SetUpMode") }}>
             <svg className="bi me-2 bi-sliders" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
