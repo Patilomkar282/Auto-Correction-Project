@@ -336,11 +336,6 @@ app.get("/stillokTool8", (req, res) => {
 
 
 
-
-
-
-
-
 app.get("/Tool2value", (req, res) => {
   console.log("updating")
   const sql = 'UPDATE Fields SET value = "False" WHERE field_name = "TOOL2"';
