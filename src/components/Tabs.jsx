@@ -9,6 +9,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Chart from "../components/Chart"
+import ScrollingWarning from '../components/ScrollingWarning';
 import "../assets/tabs.css"
 import { useState,useEffect } from 'react';
 
@@ -143,7 +144,8 @@ useEffect(() => {
       
       
       <TabPanel value={value} index={0} dir={theme.direction}>
-  <Chart className="" Readings={props.id_readings} />
+      <Chart className="" Readings={props.id_readings || []} />
+
   <p className='text-center bg-dark text-light pb-3 mb-0' style={{width: "100%", height:"80%"}}>
     
     {(() => {
@@ -228,55 +230,9 @@ useEffect(() => {
         </span>
         </p>
       </TabPanel>
+      <ScrollingWarning/>
     {/* </SwipeableViews> */}
 
-    
-        <div
-        style={{
-          // top:"-130px",
-          height: '50px',
-          overflow: 'hidden',
-          position: 'relative',
-          background: '#212529',
-          color: 'yellow',
-         
-        }}
-      >
-        {/* <p
-          style={{
-            // position: 'absolute',
-            width: '100%',
-            height: '100%',
-            margin: '0',
-            lineHeight: '50px',
-            textAlign: 'center',
-            transform: 'translateX(100%)',
-            animation: 'scroll-left 15s linear infinite',
-          }}
-        >s
-  
-          Warning : Hard Material.....
-        </p> */}
-        {/* <style>
-          {`
-            @keyframes scroll-left {
-              0% {
-                transform: translateX(100%);
-              }
-              100% {
-                transform: translateX(-100%);
-              }
-            }
-          `}
-        </style> */}
-      </div>
-
-      
-      
-
-   
-   
-    
     </Box>
 );
 }

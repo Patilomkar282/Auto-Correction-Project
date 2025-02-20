@@ -28,9 +28,9 @@ export default function Home() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [prevToolStatus, setPrevToolStatus] = useState(null);
     const [approvetool, setapprovetoll] = useState("");
-    const [selectedValue, setSelectedValue] = useState(""); 
-    const [customOption, setCustomOption] = useState(""); 
-    const [options] = useState(["Reason1", "Reason2", "Reason3", "Reason4", "custom"]); 
+    const [selectedValue, setSelectedValue] = useState("");
+    const [customOption, setCustomOption] = useState("");
+    const [options] = useState(["Reason1", "Reason2", "Reason3", "Reason4", "custom"]);
     const [popMessage, setPopMessage] = useState({
         title: "Loading",
         message: "Please wait..."
@@ -253,116 +253,116 @@ export default function Home() {
                 socket.close();
             }
 
-            
+
         }
     }, []);
 
     useEffect(() => {
         setShowProgress(false)
         const ws = new WebSocket("ws://localhost:3006/ws"); // Connect to WebSocket server
-    
-        ws.onmessage = (event) => {
-          const toolStatus = JSON.parse(event.data);
-    
-          if (JSON.stringify(toolStatus) !== JSON.stringify(prevToolStatusRef.current)) {
-            prevToolStatusRef.current = toolStatus;
-    
-            // Handle popup conditions
-            if (toolStatus.TOOL2 === "True") {
-              setmypopup(true);
-              setPopMessage({
-                title: "Check Roughing Insert",
-                message: (
-                  <>
-                    <button
-                      className="btn btn-danger mr-[20px]"
-                      onClick={() => {
-                        fetch("http://localhost:3006/updateTool2");
-                        setmypopup(false);
-                      }}
-                      style={{ margin: "50px" }}
-                    >
-                      Changed
-                    </button>
-                    <button
-                      className="btn btn-danger mr-[20px]"
-                      onClick={() => {
-                        fetch("http://localhost:3006/stillokTool2");
-                        setmypopup(false);
-                      }}
-                    >
-                      Still OK!!
-                    </button>
-                  </>
-                ),
-              });
-            } else if (toolStatus.TOOL3 === "True") {
-              setmypopup(true);
-              setPopMessage({
-                title: "Check SemiFinish",
-                message: (
-                  <>
-                    <button
-                      className="btn btn-danger mr-[20px]"
-                      onClick={() => {
-                        fetch("http://localhost:3006/updateTool3");
-                        setmypopup(false);
-                      }}
-                      style={{ margin: "50px" }}
-                    >
-                      Changed
-                    </button>
-                    <button
-                      className="btn btn-danger mr-[20px]"
-                      onClick={() => {
-                        fetch("http://localhost:3006/stillokTool3");
-                        setmypopup(false);
-                      }}
-                    >
-                      Still OK!!
-                    </button>
-                  </>
-                ),
-              });
-            } else if (toolStatus.TOOL8 === "True") {
-              setmypopup(true);
-              setPopMessage({
-                title: "Check Insert Indexing",
-                message: (
-                  <>
-                    <button
-                      className="btn btn-danger mr-[20px]"
-                      onClick={() => {
-                        fetch("http://localhost:3006/updateTool8");
-                        setmypopup(false);
-                      }}
-                      style={{ margin: "50px" }}
-                    >
-                      Changed
-                    </button>
-                    <button
-                      className="btn btn-danger mr-[20px]"
-                      onClick={() => {
-                        fetch("http://localhost:3006/stillokTool8");
-                        setmypopup(false);
-                      }}
-                    >
-                      Still OK!!
-                    </button>
-                  </>
-                ),
-              });
-            }
-          }
-        };
-    
-        return () => ws.close(); // Cleanup WebSocket connection on unmount
-      }, []);
 
-      const closePopup = () => {
+        ws.onmessage = (event) => {
+            const toolStatus = JSON.parse(event.data);
+
+            if (JSON.stringify(toolStatus) !== JSON.stringify(prevToolStatusRef.current)) {
+                prevToolStatusRef.current = toolStatus;
+
+                // Handle popup conditions
+                if (toolStatus.TOOL2 === "True") {
+                    setmypopup(true);
+                    setPopMessage({
+                        title: "Check Roughing Insert",
+                        message: (
+                            <>
+                                <button
+                                    className="btn btn-danger mr-[20px]"
+                                    onClick={() => {
+                                        fetch("http://localhost:3006/updateTool2");
+                                        setmypopup(false);
+                                    }}
+                                    style={{ margin: "50px" }}
+                                >
+                                    Changed
+                                </button>
+                                <button
+                                    className="btn btn-danger mr-[20px]"
+                                    onClick={() => {
+                                        fetch("http://localhost:3006/stillokTool2");
+                                        setmypopup(false);
+                                    }}
+                                >
+                                    Still OK!!
+                                </button>
+                            </>
+                        ),
+                    });
+                } else if (toolStatus.TOOL3 === "True") {
+                    setmypopup(true);
+                    setPopMessage({
+                        title: "Check SemiFinish",
+                        message: (
+                            <>
+                                <button
+                                    className="btn btn-danger mr-[20px]"
+                                    onClick={() => {
+                                        fetch("http://localhost:3006/updateTool3");
+                                        setmypopup(false);
+                                    }}
+                                    style={{ margin: "50px" }}
+                                >
+                                    Changed
+                                </button>
+                                <button
+                                    className="btn btn-danger mr-[20px]"
+                                    onClick={() => {
+                                        fetch("http://localhost:3006/stillokTool3");
+                                        setmypopup(false);
+                                    }}
+                                >
+                                    Still OK!!
+                                </button>
+                            </>
+                        ),
+                    });
+                } else if (toolStatus.TOOL8 === "True") {
+                    setmypopup(true);
+                    setPopMessage({
+                        title: "Check Insert Indexing",
+                        message: (
+                            <>
+                                <button
+                                    className="btn btn-danger mr-[20px]"
+                                    onClick={() => {
+                                        fetch("http://localhost:3006/updateTool8");
+                                        setmypopup(false);
+                                    }}
+                                    style={{ margin: "50px" }}
+                                >
+                                    Changed
+                                </button>
+                                <button
+                                    className="btn btn-danger mr-[20px]"
+                                    onClick={() => {
+                                        fetch("http://localhost:3006/stillokTool8");
+                                        setmypopup(false);
+                                    }}
+                                >
+                                    Still OK!!
+                                </button>
+                            </>
+                        ),
+                    });
+                }
+            }
+        };
+
+        return () => ws.close(); // Cleanup WebSocket connection on unmount
+    }, []);
+
+    const closePopup = () => {
         setPopupVisible(false);
         // fetch("http://localhost:3006/TOOL2value")
-      };
+    };
 
 
     const startMeasurement = async () => {
@@ -440,7 +440,7 @@ export default function Home() {
     const handleAddReasons = () => {
         setPopupType("add_reason");
         setpopupvisiblemsg(true); // Show the popup
-    
+
         setPopMessage({
             title: "Add Reason",
             message: (
@@ -453,23 +453,21 @@ export default function Home() {
                             onChange={(e) => {
                                 let newSelectedReason = e.target.value;
                                 console.log(newSelectedReason);
-    
+
                                 setSelectedTool(newSelectedReason); // Update selected reason
-    
+
                                 if (newSelectedReason !== "Custom") {
                                     setCustomReason(""); // Clear custom reason when another option is selected
                                 }
-                                if(newSelectedReason === "reason1" || newSelectedReason === "reason2" || newSelectedReason === "reason3"|| newSelectedReason === "reason4" )
-                                {
+                                if (newSelectedReason === "reason1" || newSelectedReason === "reason2" || newSelectedReason === "reason3" || newSelectedReason === "reason4") {
                                     setapprovetoll(newSelectedReason);
 
 
                                 }
-                                else
-                                {
+                                else {
                                     setapprovetoll("custom")
                                 }
-    
+
                                 // Update the popup message dynamically whenever the state changes
                                 updatePopMessage(newSelectedReason);
                             }}
@@ -482,7 +480,7 @@ export default function Home() {
                             <option value="Custom">Custom</option>
                         </select>
                     </div>
-    
+
                     {/* Custom Reason Input (Appears only when "Custom" is selected) */}
                     {selectedTool === "Custom" && (
                         <input
@@ -507,107 +505,107 @@ export default function Home() {
     };
 
     const updatePopMessage = (selectedValue) => {
-    setPopupType("add_reason");
-    setPopMessage({
-        title: "Add Reason",
-        message: (
-            <>
-                <div>
-                    <select
-                        id="toolSelect"
-                        style={{ padding: "10px", background: "#212529", color: "White", width: "100%" }}
-                        value={selectedValue} // Use new value
-                        onChange={(e) => {
-                            let newSelectedReason = e.target.value;
-                            setSelectedTool(newSelectedReason);
+        setPopupType("add_reason");
+        setPopMessage({
+            title: "Add Reason",
+            message: (
+                <>
+                    <div>
+                        <select
+                            id="toolSelect"
+                            style={{ padding: "10px", background: "#212529", color: "White", width: "100%" }}
+                            value={selectedValue} // Use new value
+                            onChange={(e) => {
+                                let newSelectedReason = e.target.value;
+                                setSelectedTool(newSelectedReason);
 
-                            if (newSelectedReason !== "Custom") {
-                                setCustomReason("");
-                            }
+                                if (newSelectedReason !== "Custom") {
+                                    setCustomReason("");
+                                }
 
-                            updatePopMessage(newSelectedReason); // Update UI again
-                        }}
-                    >
-                        <option value="">Select Reason</option> {/* Default option */}
-                        <option value="reason1">Reason 1</option>
-                        <option value="reason2">Reason 2</option>
-                        <option value="reason3">Reason 3</option>
-                        <option value="reason4">Reason 4</option>
-                        <option value="Custom">Custom</option>
-                    </select>
-                </div>
+                                updatePopMessage(newSelectedReason); // Update UI again
+                            }}
+                        >
+                            <option value="">Select Reason</option> {/* Default option */}
+                            <option value="reason1">Reason 1</option>
+                            <option value="reason2">Reason 2</option>
+                            <option value="reason3">Reason 3</option>
+                            <option value="reason4">Reason 4</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
 
-                {/* Show input only when "Custom" is selected */}
-                {selectedValue === "Custom" && (
-                    <input
-                        type="text"
-                        placeholder="Enter your custom reason..."
-                        value={customReason}
-                        onChange={(e) => setCustomReason(e.target.value)}
-                        style={{
-                            marginTop: "10px",
-                            padding: "10px",
-                            background: "#212529",
-                            color: "white",
-                            width: "100%",
-                            border: "1px solid #6c757d",
-                            borderRadius: "5px",
-                        }}
-                    />
-                )}
-            </>
-        ),
-    });
-};
+                    {/* Show input only when "Custom" is selected */}
+                    {selectedValue === "Custom" && (
+                        <input
+                            type="text"
+                            placeholder="Enter your custom reason..."
+                            value={customReason}
+                            onChange={(e) => setCustomReason(e.target.value)}
+                            style={{
+                                marginTop: "10px",
+                                padding: "10px",
+                                background: "#212529",
+                                color: "white",
+                                width: "100%",
+                                border: "1px solid #6c757d",
+                                borderRadius: "5px",
+                            }}
+                        />
+                    )}
+                </>
+            ),
+        });
+    };
     // const handlereasonchange =()=>{
     //     //   alert("Hello Omkar");
 
     // }
 
-    const handleapprove =  async () => {
+    const handleapprove = async () => {
         if (!approvetool) {
             alert("Please select a reason.");
             return;
         }
 
-       
-    if (popupType === "change_tool") {
-      
-        if (approvetool === "tool2") {
-            updatetool2();
-        } else if (approvetool === "tool3") {
-            updatetool3();
-        } else if (approvetool === "tool8") {
-            updatetool8();
-        }
 
-        setpopupvisiblemsg(false);
-        return; 
-    }
+        if (popupType === "change_tool") {
 
-    if (popupType === "add_reason") {
-        
-        try {
-            const response = await fetch("http://localhost:3006/addReason", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ reason: approvetool }),
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                setpopupvisiblemsg(false);
-            } else {
-                alert("Failed to add reason: " + data.message);
+            if (approvetool === "tool2") {
+                updatetool2();
+            } else if (approvetool === "tool3") {
+                updatetool3();
+            } else if (approvetool === "tool8") {
+                updatetool8();
             }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Error adding reason.");
+
+            setpopupvisiblemsg(false);
+            return;
         }
-    }
-       
-    
-        
+
+        if (popupType === "add_reason") {
+
+            try {
+                const response = await fetch("http://localhost:3006/addReason", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ reason: approvetool }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    setpopupvisiblemsg(false);
+                } else {
+                    alert("Failed to add reason: " + data.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error adding reason.");
+            }
+        }
+
+
+
         setSelectedTool("");
         setpopupvisiblemsg(false);
     }
@@ -629,7 +627,7 @@ export default function Home() {
         await fetch("http://localhost:3006/Tool8");
 
     };
-  
+
     const arrayToCSV = (array, headers) => {
         const csvRows = [headers.join(',')];
         array.forEach(row => {
@@ -665,7 +663,7 @@ export default function Home() {
 
                 {mypopup && (
                     <>
-                        <div className="custom-popup bg-dark text-white" style={{zIndex:10}}>
+                        <div className="custom-popup bg-dark text-white" style={{ zIndex: 10 }}>
                             <h5 className='mb-3' style={{ fontSize: "2rem" }}>{popMessage.title}</h5>
                             <p className='mb-3' style={{ fontSize: "0.5rem" }}>{popMessage.message}</p>
                             {/* <button onClick={closePopup} className="btn btn-secondary">Close</button> */}
@@ -707,46 +705,46 @@ export default function Home() {
             {/* {OD_Readings && <Chart Readings={OD_Readings}></Chart>}       */}
             {Success && <FullWidthTabs width="fluid" height="" id_readings={ID_Readings} od_readings={OD_Readings} />}
             <div style={{ display: "flex", marginLeft: "-150px", justifyContent: "center", gap: "20px", marginTop: "-40px" }}>
-            <button className='text-center text-dark pb-3 mb-0'
-    style={{
-      height: "32px",
-      padding: "5px 15px",
-      backgroundColor: "#DC3545",
-      fontWeight:"500",
-      color: "black",
-      border: "none",
-      borderRadius: "20px",
-      cursor: "pointer",
-      fontSize: "14px",
-      position:"absolute",
-      textAlign: "center",
-    }}
-    onClick={handlePopupVisibility}
-  >
-    CHANGE TOOL
-  </button>
+                <button className='text-center text-dark pb-3 mb-0'
+                    style={{
+                        height: "32px",
+                        padding: "5px 15px",
+                        backgroundColor: "#DC3545",
+                        fontWeight: "500",
+                        color: "black",
+                        border: "none",
+                        borderRadius: "20px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        position: "absolute",
+                        textAlign: "center",
+                    }}
+                    onClick={handlePopupVisibility}
+                >
+                    CHANGE TOOL
+                </button>
 
-  <button className='text-center text-dark pb-3 mb-0'
-    style={{
-      height: "32px",
-      width: "125px",
-      padding: "5px 15px",
-      backgroundColor: "#DC3545",
-      color: "black",
-      border: "none",
-      borderRadius: "20px",
-      cursor: "pointer",
-      fontSize: "14px",
-      fontWeight: "500",
-      textAlign: "center",
-      position:"absolute",
-      marginLeft: "350px"
-    }}
-    onClick={handleAddReasons}
-  >
-    ADD REASONS
-  </button>
-</div>
+                <button className='text-center text-dark pb-3 mb-0'
+                    style={{
+                        height: "32px",
+                        width: "125px",
+                        padding: "5px 15px",
+                        backgroundColor: "#DC3545",
+                        color: "black",
+                        border: "none",
+                        borderRadius: "20px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        textAlign: "center",
+                        position: "absolute",
+                        marginLeft: "350px"
+                    }}
+                    onClick={handleAddReasons}
+                >
+                    ADD REASONS
+                </button>
+            </div>
             {ispopupvisiblemsg && (
                 <div
                     style={{
