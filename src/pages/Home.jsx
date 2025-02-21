@@ -257,107 +257,137 @@ export default function Home() {
         }
     }, []);
 
-    useEffect(() => {
-        setShowProgress(false)
-        const ws = new WebSocket("ws://localhost:3006/ws"); // Connect to WebSocket server
+  useEffect(()=>
+    {
+            console.log("Initializing WebSocket...");
+            setShowProgress(false);
 
-        ws.onmessage = (event) => {
-            const toolStatus = JSON.parse(event.data);
+            const socket = new WebSocket("ws://localhost:3006/ws");
 
-            if (JSON.stringify(toolStatus) !== JSON.stringify(prevToolStatusRef.current)) {
-                prevToolStatusRef.current = toolStatus;
-
-                // Handle popup conditions
-                if (toolStatus.TOOL2 === "True") {
-                    setmypopup(true);
-                    setPopMessage({
-                        title: "Check Roughing Insert",
-                        message: (
-                            <>
-                                <button
-                                    className="btn btn-danger mr-[20px]"
-                                    onClick={() => {
-                                        fetch("http://localhost:3006/updateTool2");
-                                        setmypopup(false);
-                                    }}
-                                    style={{ margin: "50px" }}
-                                >
-                                    Changed
-                                </button>
-                                <button
-                                    className="btn btn-danger mr-[20px]"
-                                    onClick={() => {
-                                        fetch("http://localhost:3006/stillokTool2");
-                                        setmypopup(false);
-                                    }}
-                                >
-                                    Still OK!!
-                                </button>
-                            </>
-                        ),
-                    });
-                } else if (toolStatus.TOOL3 === "True") {
-                    setmypopup(true);
-                    setPopMessage({
-                        title: "Check SemiFinish",
-                        message: (
-                            <>
-                                <button
-                                    className="btn btn-danger mr-[20px]"
-                                    onClick={() => {
-                                        fetch("http://localhost:3006/updateTool3");
-                                        setmypopup(false);
-                                    }}
-                                    style={{ margin: "50px" }}
-                                >
-                                    Changed
-                                </button>
-                                <button
-                                    className="btn btn-danger mr-[20px]"
-                                    onClick={() => {
-                                        fetch("http://localhost:3006/stillokTool3");
-                                        setmypopup(false);
-                                    }}
-                                >
-                                    Still OK!!
-                                </button>
-                            </>
-                        ),
-                    });
-                } else if (toolStatus.TOOL8 === "True") {
-                    setmypopup(true);
-                    setPopMessage({
-                        title: "Check Insert Indexing",
-                        message: (
-                            <>
-                                <button
-                                    className="btn btn-danger mr-[20px]"
-                                    onClick={() => {
-                                        fetch("http://localhost:3006/updateTool8");
-                                        setmypopup(false);
-                                    }}
-                                    style={{ margin: "50px" }}
-                                >
-                                    Changed
-                                </button>
-                                <button
-                                    className="btn btn-danger mr-[20px]"
-                                    onClick={() => {
-                                        fetch("http://localhost:3006/stillokTool8");
-                                        setmypopup(false);
-                                    }}
-                                >
-                                    Still OK!!
-                                </button>
-                            </>
-                        ),
-                    });
+            socket.onopen = () => console.log("WebSocket connected!");
+            socket.onmessage = async(event) => {
+                const toolStatus = JSON.parse(event.data);
+                
+                // ✅ Prevent duplicate logs by checking if status changed
+                if (JSON.stringify(toolStatus) === JSON.stringify(prevToolStatusRef.current)) {
+                    return; // Exit if data is the same (avoiding unnecessary processing)
                 }
-            }
-        };
 
-        return () => ws.close(); // Cleanup WebSocket connection on unmount
-    }, []);
+                prevToolStatusRef.current = toolStatus;
+                console.log("Toolstatus Received from WebSocket:", toolStatus);
+
+               // Handle popup conditions
+             if (toolStatus.TOOL2 === "True") {
+                console.log("Omkar")
+                setmypopup(true);
+                setPopMessage({
+                    title: "Check Roughing Insert",
+                    message: (
+                        <>
+                            <button
+                                className="btn btn-danger mr-[20px]"
+                                onClick={() => {
+                                    console.log("Closing popup...");
+                                    setmypopup(false);  // Close popup
+                                    setTimeout(async () => {
+                                        await fetch("http://localhost:3006/updateTool2")
+                                            .then(res => res.json())
+                                            .then(data => console.log("API Response:", data))
+                                            .catch(error => console.error("Fetch Error:", error));
+                                    }, 100); // Delay to ensure state change is processed
+                                }}
+                                
+                                style={{ margin: "50px" }}
+                            >
+                                Changed
+                            </button>
+                            <button
+                                className="btn btn-danger mr-[20px]"
+                                onClick={() => {
+                                    fetch("http://localhost:3006/stillokTool2");
+                                    setmypopup(false);
+                                }}
+                            >
+                                Still OK!!
+                            </button>
+                        </>
+                    ),
+                });
+             } else if (toolStatus.TOOL3 === "True") {
+                setmypopup(true);
+                setPopMessage({
+                    title: "Check SemiFinish",
+                    message: (
+                        <>
+                            <button
+                                className="btn btn-danger mr-[20px]"
+                                onClick={() => {
+                                 
+                                    fetch("http://localhost:3006/updateTool3");
+                                    setmypopup(false)
+                                   
+                                }}
+                                style={{ margin: "50px" }}
+                            >
+                                Changed
+                            </button>
+                            <button
+                                className="btn btn-danger mr-[20px]"
+                                onClick={() => {
+                                    console.log("Closing popup...");
+                                    setmypopup(false);  // Close popup
+                                    setTimeout(() => {
+                                        fetch("http://localhost:3006/updateTool2")
+                                            .then(res => res.json())
+                                            .then(data => console.log("API Response:", data))
+                                            .catch(error => console.error("Fetch Error:", error));
+                                    }, 100); // Delay to ensure state change is processed
+                                }}
+                            >
+                                Still OK!!
+                            </button>
+                        </>
+                    ),
+                });
+             } else if (toolStatus.TOOL8 === "True") {
+                setmypopup(true);
+                setPopMessage({
+                    title: "Check Insert Indexing",
+                    message: (
+                        <>
+                            <button
+                                className="btn btn-danger mr-[20px]"
+                                onClick={() => {
+                                    fetch("http://localhost:3006/updateTool8");
+                                    setmypopup(false);
+                                }}
+                                style={{ margin: "50px" }}
+                            >
+                                Changed
+                            </button>
+                            <button
+                                className="btn btn-danger mr-[20px]"
+                                onClick={() => {
+                                    fetch("http://localhost:3006/stillokTool8");
+                                    setmypopup(false);
+                                }}
+                            >
+                                Still OK!!
+                            </button>
+                        </>
+                    ),
+                });
+             }
+            }
+    
+
+      return () => {
+        console.log("Cleaning up WebSocket...");
+        socket.close();
+    };
+
+},[])
+
 
     const closePopup = () => {
         setPopupVisible(false);
