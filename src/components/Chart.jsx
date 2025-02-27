@@ -3,11 +3,16 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import PropTypes from "prop-types";
 
-export default function BasicArea({ Readings }) {
-  const [usl, setUsl] = useState(null);
-  const [lsl, setLsl] = useState(null);
-  
-  
+export default function BasicArea({ Readings, currentFeature }) {
+  const [limits, setLimits] = useState({
+    featureOD: null,
+    uslOD: null,
+    lslOD: null,
+    featureID: null,
+    uslID: null,
+    lslID: null,
+  });
+
   useEffect(() => {
     async function fetchLimits() {
       try {
@@ -20,9 +25,17 @@ export default function BasicArea({ Readings }) {
         const data = await response.json();
         console.log("API Response:", data);
 
-        if (data?.results?.length > 0) {
-          setUsl(Number(data.results[0].USL)); 
-          setLsl(Number(data.results[0].LSL)); 
+        if (data?.results?.length > 1) {
+          setLimits({
+            featureOD: data.results[0].Feature,
+            uslOD: parseFloat(data.results[0].USL),
+            lslOD: parseFloat(data.results[0].LSL),
+            featureID: data.results[1].Feature,
+            uslID: parseFloat(data.results[1].USL),
+            
+            lslID: parseFloat(data.results[1].LSL),
+          });
+        
         } else {
           console.error("Invalid API response format:", data);
         }
@@ -33,48 +46,90 @@ export default function BasicArea({ Readings }) {
 
     fetchLimits();
   }, []);
+  useEffect(() => {
+    if (limits.uslID !== undefined) {
+        console.log("uslID:", limits.uslID);
+        console.log("lslID:", limits.lslID);
+        console.log("uslOD:", limits.uslOD);
+        console.log("lslOD:", limits.lslOD);
+    }
+}, [limits]); 
 
   if (!Array.isArray(Readings) || Readings.length === 0) {
     return <p style={{ color: "white" }}>No data available</p>;
   }
 
-  const mean =
-    usl !== null && lsl !== null && !isNaN(usl) && !isNaN(lsl)
-      ? (usl + lsl) / 2
-      : null;
+  const { featureOD, uslOD, lslOD, featureID, uslID, lslID } = limits;
+
+  const meanOD = uslOD && lslOD ? (uslOD + lslOD) / 2 : null;
+  const meanID = uslID && lslID ? (uslID + lslID) / 2 : null;
+
+  // Determine which feature to show - this should come from props or parent state
+  const isID = currentFeature === "ID";
+
+  const series = isID
+    ? [
+        {
+          data: Readings,
+          curve: "linear",
+          color: "#dc3545",
+        },
+        limits.uslID && {
+          data: Array(Readings.length).fill(limits.uslID),
+          curve: "linear",
+          color: "orange",
+          dashArray: "5 5",
+          showMark: false,
+        },
+        limits.lslID && {
+          data: Array(Readings.length).fill(limits.lslID),
+          curve: "linear",
+          color: "green",
+          dashArray: "5 5",
+          showMark: false,
+        },
+        meanID && {
+          data: Array(Readings.length).fill(meanID),
+          curve: "linear",
+          color: "white",
+          dashArray: "5 5",
+          showMark: false,
+        },
+      ].filter(Boolean)
+    : [
+        {
+          data: Readings,
+          curve: "linear",
+          color: "#dc3545",
+        },
+        uslOD && {
+          data: Array(Readings.length).fill(uslOD),
+          curve: "linear",
+          color: "orange",
+          dashArray: "5 5",
+          showMark: false,
+        },
+        lslOD && {
+          data: Array(Readings.length).fill(lslOD),
+          curve: "linear",
+          color: "green",
+          dashArray: "5 5",
+          showMark: false,
+        },
+        meanOD && {
+          data: Array(Readings.length).fill(meanOD),
+          curve: "linear",
+          color: "white",
+          dashArray: "5 5",
+          showMark: false,
+        },
+      ].filter(Boolean);
 
   return (
     <div style={{ width: "100%", height: "54vh", maxWidth: "100%" }}>
       <LineChart
         className="text-center"
-        series={[
-          {
-            data: Readings,
-            curve: "linear",
-            color: "#dc3545",
-          },
-          usl !== null && !isNaN(usl) && {
-            data: Array(Readings.length).fill(usl),
-            curve: "linear",
-            color: "orange",
-            dashArray: "5 5",
-            showMark: false,
-          },
-          lsl !== null && !isNaN(lsl) && {
-            data: Array(Readings.length).fill(lsl),
-            curve: "linear",
-            color: "green",
-            dashArray: "5 5",
-            showMark: false,
-          },
-          mean !== null && !isNaN(mean) && {
-            data: Array(Readings.length).fill(mean),
-            curve: "linear",
-            color: "white",
-            dashArray: "5 5",
-            showMark: false,
-          },
-        ].filter(Boolean)} // Removes undefined values
+        series={series}
         xAxis={[
           {
             data: Array.from({ length: 20 }, (_, i) => i),
@@ -103,4 +158,5 @@ export default function BasicArea({ Readings }) {
 
 BasicArea.propTypes = {
   Readings: PropTypes.arrayOf(PropTypes.number).isRequired,
+  currentFeature: PropTypes.string.isRequired, // either "ID" or "OD"
 };
