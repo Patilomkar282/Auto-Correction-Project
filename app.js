@@ -390,14 +390,22 @@ app.get("/Toolsvalue", (req, res) => {
 });
 
 app.get("/usllsl", (req, res) => {
-  const sql = "SELECT USL, LSL FROM df LIMIT 1"; // Replace 'df' with your actual table name
+ 
+
+  const sql = "SELECT Feature,USL, LSL FROM Df";  // double-check case of table and columns
+
   connection.query(sql, (err, result) => {
     if (err) {
-      return res.status(500).json({ error: "Database query failed" });
+      console.error("Database query failed:", err);  // This logs exact MySQL error
+      return res.status(500).json({ error: "Database query failed", details: err.message });
     }
+    console.log(result)
+
     res.json({ results: result });
   });
 });
+
+
 
 
 
@@ -442,6 +450,8 @@ app.post('/logindetails', (req, res) => {
 
 
 
+
+
 app.get("/Tool", (req, res) => {
   const sql = `UPDATE Fields SET value = "False" WHERE field_name = "TOOL_BROKEN"`;
   connection.query(sql, (err, results) => {
@@ -466,7 +476,7 @@ app.get("/lastEntry", (req, res) => {
 
 app.get("/extremeshift", (req, res) => {
  
-  const sql = `SELECT value FROM fields WHERE field_name="Extremeshift"`;
+  const sql = `SELECT value FROM Fields WHERE field_name="Extremeshift"`;
   
   connection.query(sql, (err, results) => {
     if (err) {
