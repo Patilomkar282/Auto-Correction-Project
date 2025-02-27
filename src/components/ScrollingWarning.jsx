@@ -9,7 +9,7 @@ const ScrollingWarning = () => {
         overflow: "hidden",
         position: "relative",
         background: "#212529",
-        color: "yellow",
+        color: "white",
       }}
     >
       <p

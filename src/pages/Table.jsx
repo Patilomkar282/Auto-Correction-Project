@@ -687,7 +687,7 @@ export default function Table() {
                                 />
                             </div>
                             <div className="col-4 mb-2">
-                                <label>Program Number:</label>
+                                <label>Program No.:</label>
                                 <input
                                     type="text"
                                     className="form-control bg-dark text-white p-1"

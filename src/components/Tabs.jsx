@@ -12,6 +12,7 @@ import Chart from "../components/Chart"
 import ScrollingWarning from '../components/ScrollingWarning';
 import "../assets/tabs.css"
 import { useState,useEffect } from 'react';
+import StatsCards from './StatsCards';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,6 +51,7 @@ export default function FullWidthTabs(props) {
  
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
+  const [enablewarning,setEnablewarning]=useState();
   
   const [LSL, setLSL] = React.useState(0);
   // const [extremeleft,setextremeleft]=useState("");
@@ -75,6 +77,22 @@ useEffect(() => {
   }
   reqData();
 }, []);
+
+useEffect(() => {
+  async function reqData() {
+    try {
+      const response = await fetch('http://localhost:3006/extremeshift');
+      const data = await response.json(); // Parse response as JSON
+      
+      setEnablewarning(data.results[0].value); // Now setting the parsed JSON data
+    
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+  reqData();
+}, []);
+
 
 // useEffect(() => {
 //   console.log('useEffect triggered');
@@ -229,8 +247,16 @@ useEffect(() => {
         CURRENT OD READING&nbsp;&nbsp;:&nbsp; {Math.round(props.od_readings[props.od_readings.length-1]*1000)/1000}
         </span>
         </p>
+      
       </TabPanel>
-      <ScrollingWarning/>
+      
+      {/* {
+        (enablewarning==="True")?<ScrollingWarning/>:<div></div>
+      } */}
+
+
+
+     
     {/* </SwipeableViews> */}
 
     </Box>

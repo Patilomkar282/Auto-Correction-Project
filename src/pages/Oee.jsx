@@ -34,24 +34,16 @@ export default function Oee() {
         )
     }
     return (
-        <div className="p-3 pb-0 height-fluid position-relative">
-            <div className="container text-center dimmed-background ">
-                {/* <button onClick={togglePopup} className="btn btn-primary">Toggle Pop-up</button> */}
-
-
-            </div>
+        <div className="p-3 pb-0 height-fluid position-relative" style={{width:"100%"}}>
+            
             <div className='d-flex justify-content-between'>
                 <h2 className='mb-0'>OEE CHART</h2>
             </div>
             <hr className='m-2 mb-3 mx-0' style={{ borderColor: "#6c757d" }}></hr>
             <GaugeChart />
+            <div style={{width:"100%"}}>
             <StatsCards />
-
-
-            {/* {ID_Readings && <Chart Readings={ID_Readings}></Chart>} */}
-            {/* {OD_Readings && <Chart Readings={OD_Readings}></Chart>}       */}
-            {/* {Success && <FullWidthTabs width="fluid" height="" id_readings={ID_Readings} od_readings={OD_Readings} />} */}
-            {/* <p>ID_READING : {ID_Readings[ID_Readings.length-1]} OD_READING : {OD_Readings[OD_Readings.length-1]}</p> */}
+            </div>
 
         </div>
     )

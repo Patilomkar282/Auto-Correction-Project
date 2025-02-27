@@ -19,18 +19,18 @@ const GaugeChart = () => {
         splitNumber: 4,
         axisLine: {
           lineStyle: {
-            width: 80,
+            width: 30, // Increased width for better visibility
             color: [
-              [0.25, "#FF0000"],  // 🔴 Bad (Red)
-              [0.5, "#FFA500"],   // 🟠 Average (Orange)
-              [0.75, "#00FF00"],  // 🟢 Good (Green)
-              [1, "#004d00"],     // 🟢 Dark Green (Excellent)
+              [0.25, "#FF0000"],  // Bad (Red)
+              [0.5, "#FFA500"],   // Average (Orange)
+              [0.75, "#00FF00"],  // Good (Green)
+              [1, "#004d00"],     // Excellent (Dark Green)
             ],
           },
         },
         pointer: {
-          width: 4,
-          length: "80%",
+          width: 5,
+          length: "85%",
           itemStyle: {
             color: "blue", // Pointer color
           },
@@ -39,7 +39,7 @@ const GaugeChart = () => {
           show: false,
         },
         splitLine: {
-          length: 10,
+          length: 5,
           lineStyle: {
             color: "#fff",
           },
@@ -48,17 +48,21 @@ const GaugeChart = () => {
           show: false,
         },
         detail: {
-          formatter: (value) => `Percentage OEE : ${value}%`, // 🆕 Added Label
-          fontSize: 16,
+          formatter: (value) => `OEE: ${value}%`, // Adjusted label
+          fontSize: 14,
           fontWeight: "bold",
-          offsetCenter: [0, "70%"],
+          offsetCenter: [0, "65%"],
         },
         data: [{ value: 80 }], // Adjust the pointer value here
       },
     ],
   };
 
-  return <ReactECharts option={option} style={{ height: "500px", width: "500px", marginLeft:'250px', marginTop:'20px'}} />;
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", width: "100%" }}>
+      <ReactECharts option={option} style={{ height: "300px", width: "400px" }} />
+    </div>
+  );
 };
 
 export default GaugeChart;
