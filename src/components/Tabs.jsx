@@ -15,6 +15,7 @@ import { useState,useEffect } from 'react';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+  
 
   return (
     <div
@@ -50,6 +51,7 @@ export default function FullWidthTabs(props) {
  
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
+  const [extremeshift,setExtremeShift]=React.useState();
   
   const [LSL, setLSL] = React.useState(0);
   // const [extremeleft,setextremeleft]=useState("");
@@ -75,6 +77,28 @@ useEffect(() => {
   }
   reqData();
 }, []);
+
+
+useEffect(() => {
+  async function reqdata() {
+    try {
+      const response = await fetch('http://localhost:3006/extremeshift');
+      if (!response.ok) {
+        alert("Data not received");
+      } else {
+        const data = await response.json(); // Parse response
+        console.log("Extreme:", data.results[0].value);
+        const shiftValue = data.results[0].value === "True"; 
+        setExtremeShift(shiftValue);
+      }
+    } catch (error) {
+      console.log("Data not fetched", error);
+    } 
+  }
+
+  reqdata();
+}, []); 
+
 
 // useEffect(() => {
 //   console.log('useEffect triggered');
@@ -117,7 +141,7 @@ useEffect(() => {
   // const handleChangeIndex = (index) => {
   //   setValue(index);
   // };
-  { console.log("LSL",LSL,"USL",USL) }
+  
   return (
     <Box sx={() => ({
       bgcolor: 'background.paper',  width: '100%',padding: "0px 0px 0px 0px",
@@ -230,8 +254,20 @@ useEffect(() => {
         </span>
         </p>
       </TabPanel>
-      <ScrollingWarning/>
-    {/* </SwipeableViews> */}
+      {extremeshift ?  <ScrollingWarning/> : <div
+      style={{
+        top: "50px",
+        height: "50px",
+        overflow: "hidden",
+        position: "relative",
+        background: "#212529",
+        color: "yellow",
+      }}
+    ></div>}
+
+
+     
+   
 
     </Box>
 );
