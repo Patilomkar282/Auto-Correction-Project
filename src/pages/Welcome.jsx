@@ -14,13 +14,13 @@ export default function Welcome() {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  const { Page, setPage, userCredentials, setUserCredentials } =
+  const { Page, setPage, userCredentials, setUserCredentials, UserRole, setUserRole} =
     React.useContext(AppContext);
   setPage("Home");
   const [isPopupVisible, setPopupVisible] = useState(true);
   const [popMessage, setPopMessage] = useState({
     title: "WELCOME",
-    message: `to ATHENA AUTOMATION Dashboard`,
+    message: `to ATHENA AUTOMATION Admin Dashboard`,
   });
   // const [Progress, setProgress] = useState(16);
   // const [ID_Readings, setID_Readings] = useState([]);
@@ -67,6 +67,8 @@ export default function Welcome() {
               alert("FAILED TO ENTER HOME")
           }
           localStorage.setItem('SetUpMode', "True");
+          localStorage.removeItem('UserRole');
+         
       }
 setUp();
   }, [])

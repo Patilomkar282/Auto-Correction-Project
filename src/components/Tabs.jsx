@@ -16,6 +16,7 @@ import StatsCards from './StatsCards';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
+  
 
   return (
     <div
@@ -51,7 +52,7 @@ export default function FullWidthTabs(props) {
  
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
-  const [enablewarning,setEnablewarning]=useState();
+  const [extremeshift,setExtremeShift]=React.useState();
   
   const [LSL, setLSL] = React.useState(0);
   // const [extremeleft,setextremeleft]=useState("");
@@ -78,20 +79,26 @@ useEffect(() => {
   reqData();
 }, []);
 
+
 useEffect(() => {
-  async function reqData() {
+  async function reqdata() {
     try {
       const response = await fetch('http://localhost:3006/extremeshift');
-      const data = await response.json(); // Parse response as JSON
-      
-      setEnablewarning(data.results[0].value); // Now setting the parsed JSON data
-    
+      if (!response.ok) {
+        alert("Data not received");
+      } else {
+        const data = await response.json(); // Parse response
+        console.log("Extreme:", data.results[0].value);
+        const shiftValue = data.results[0].value === "True"; 
+        setExtremeShift(shiftValue);
+      }
     } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+      console.log("Data not fetched", error);
+    } 
   }
-  reqData();
-}, []);
+
+  reqdata();
+}, []); 
 
 
 // useEffect(() => {
@@ -135,7 +142,7 @@ useEffect(() => {
   // const handleChangeIndex = (index) => {
   //   setValue(index);
   // };
-  { console.log("LSL",LSL,"USL",USL) }
+  
   return (
     <Box sx={() => ({
       bgcolor: 'background.paper',  width: '100%',padding: "0px 0px 0px 0px",
@@ -249,15 +256,20 @@ useEffect(() => {
         </p>
       
       </TabPanel>
-      
-      {/* {
-        (enablewarning==="True")?<ScrollingWarning/>:<div></div>
-      } */}
-
+      {extremeshift ?  <ScrollingWarning/> : <div
+      style={{
+        top: "50px",
+        height: "50px",
+        overflow: "hidden",
+        position: "relative",
+        background: "#212529",
+        color: "yellow",
+      }}
+    ></div>}
 
 
      
-    {/* </SwipeableViews> */}
+   
 
     </Box>
 );

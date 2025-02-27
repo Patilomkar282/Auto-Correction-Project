@@ -77,7 +77,7 @@ export default function Home() {
             od_readings = od_readings.reverse();
             setID_Readings(id_readings);
             setOD_Readings(od_readings);
-            console.log(id_readings, od_readings);
+            // console.log(id_readings, od_readings);
         }
     }
     useEffect(() => {
@@ -159,73 +159,6 @@ export default function Home() {
             } else {
                 setPopupVisible(false);
                 setSuccess(true);
-                // if (data.INSERT_INDEXING === "True") {
-                //     setSuccess(false);
-                //     setPopMessage({
-                //         title: "FINISH INSERT",
-                //         message: (
-                //             <>
-                //                 <h3>Change Finish Insert</h3>
-                //                 <button  className="btn btn-danger" onClick={() => { fetch("http://localhost:3006/Index"); setPopupVisible(false); setSuccess(true)}}>Finish Inserted</button>
-                //             </>
-                //         )
-                //     })
-
-                //     setShowProgress(false);
-                //     setPopupVisible(true);
-                //     return;
-
-                // }
-
-                //  if (data.TOOL2 === "False") {
-                //     setSuccess(false);
-                //     setPopMessage({
-                //         title: "Semi-Finish Insert",
-                //         message: (
-                //             <>
-                //                 <h3>Change Tool</h3>
-                //                 <button  className="btn btn-danger" onClick={() => { fetch("http://localhost:3006/Semifinish"); setPopupVisible(false); setSuccess(true)}}>Semi-Finish Inserted</button>
-                //             </>
-                //         )
-                //     })
-                //     setShowProgress(false);
-                //     setPopupVisible(true);
-                //     return;
-                // }
-                // if (data.SemiFinish === "True") {
-                //     setSuccess(false);
-                //     setPopMessage({
-                //         title: "Semi-Finish Insert",
-                //         message: (
-                //             <>
-                //                 <h3>Change Semi-Finish Insert</h3>
-                //                 <button  className="btn btn-danger" onClick={() => { fetch("http://localhost:3006/Semifinish"); setPopupVisible(false); setSuccess(true)}}>Semi-Finish Inserted</button>
-                //             </>
-                //         )
-                //     })
-                //     setShowProgress(false);
-                //     setPopupVisible(true);
-                //     return;
-                // }
-
-
-                // if (data.RoughingInsert === "True") {
-                //     setSuccess(false);
-                //     setPopMessage({
-                //         title:"Roughing Insert",
-                //         message: (
-                //             <>
-                //                 <h3>Change Roughing Insert</h3>
-                //                 <button  className="btn btn-danger" onClick={() => { fetch("http://localhost:3006/roughinginsert"); setPopupVisible(false); setSuccess(true)}}>Roughing Inserted</button>
-                //             </>
-                //         )
-                //     })
-
-                //     setShowProgress(false);
-                //     setPopupVisible(true);
-                //     return;
-
-                // }
 
                 if (data.TOOL_BROKEN === "True") {
                     setSuccess(false);
@@ -265,7 +198,7 @@ export default function Home() {
             const socket = new WebSocket("ws://localhost:3006/ws");
 
             socket.onopen = () => console.log("WebSocket connected!");
-            socket.onmessage = async(event) => {
+            socket.onmessage = async (event) => {
                 const toolStatus = JSON.parse(event.data);
                 
                 // ✅ Prevent duplicate logs by checking if status changed
@@ -386,7 +319,7 @@ export default function Home() {
         socket.close();
     };
 
-},[])
+},[prevToolStatusRef])
 
 
     const closePopup = () => {
@@ -701,7 +634,7 @@ export default function Home() {
                                 <div className="progress-bar progress-bar-striped bg-danger b-5" role="progressbar" style={{ width: `${Progress}%`, height: "100%" }} aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>}
                         </div>
-                        <div className="backdrop"></div>
+                        {/* <div className="backdrop" style={{zindex:'0'}}></div> */}
                     </>
                 )}
 
@@ -757,7 +690,7 @@ export default function Home() {
                 <button className='text-center text-dark pb-3 mb-0'
                     style={{
                         height: "32px",
-                        width: "125px",
+                        width: "150px",
                         padding: "5px 15px",
                         backgroundColor: "#DC3545",
                         color: "black",
@@ -787,7 +720,6 @@ export default function Home() {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        zIndex: 1000,
                     }}
                 >
                     <div
@@ -800,6 +732,7 @@ export default function Home() {
                             width: "500px",
                             height: "250px",
                             textAlign: "center",
+                            zIndex: "1000"
                         }}
                     >
                         <h2 style={{ color: 'white' }}>{popMessage.title}</h2>

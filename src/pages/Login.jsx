@@ -16,12 +16,16 @@ import { useContext, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import SlideUpPage from '../components/SlideUp';
-
-
+// import { useNavigate } from 'react-router-dom';
 
 const defaultTheme = createTheme();
-
+// const Navigate = useNavigate();
 export default function Login() {
+  const { setUserRole } = useContext(AppContext);
+  const contextValue = useContext(AppContext);
+console.log("AppContext inside Login:", contextValue);
+
+  console.log(setUserRole);
   const navigate = useNavigate();
   // const [isVisible, setIsVisible] = useState(true); // The state is now in the parent
   const [isSlidingUp, setIsSlidingUp] = useState(false);
@@ -69,8 +73,8 @@ export default function Login() {
       username: data.get('email'),
       password: data.get('password'),
     });
+
     async function login() {
-        
         const response = await fetch('http://localhost:3006/login', {
             method: 'POST',
             headers: {
@@ -78,23 +82,43 @@ export default function Login() {
             },
             body: payload
         });
+
         if (!response.ok) {
             alert('Error: ' + response.statusText);
-        }
-        else {
-            const data = await response.json()
+        } else {
+            const data = await response.json();
+            setUserRole(data.role);
+            console.log("role:", data.role);
+
             if (data["success"]) {
-                setUserCredentials(data["session"])
-                navigate("/");
-            }else{
-                alert('INVALID CREDENTIALS ')
+                const userData = { session: data["session"], role: data.role };
+                localStorage.setItem("token", JSON.stringify(userData.session));
+                localStorage.setItem("role", JSON.stringify(userData.role));
+                setUserCredentials(userData);
+
+                // New request to store role in DB
+                await fetch('http://localhost:3006/logindetails', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ role: data.role }) // Sending only role
+                });
+
+                // Redirect based on role
+                if (data.role === "operator") {
+                    navigate("/operator");
+                } else {
+                    navigate("/");
+                }
+            } else {
+                alert('INVALID CREDENTIALS');
             }
         }
-        const data = await response.json()
-        console.log(data)
     }
-    await login()
-  };
+    await login();
+};
+
 
   return (<>
     <SlideUpPage isSlidingUp={isSlidingUp} />

@@ -1,14 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import { BrowserRouter } from 'react-router-dom'
-// import 'mdb-react-ui-kit/dist/css/mdb.min.css';
-// import "@fortawesome/fontawesome-free/css/all.min.css";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import { AppProvider } from "./AppContext"; // Import the AppProvider
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+      <AppProvider>
     <BrowserRouter>
-      <App />
+        <App />
+    
     </BrowserRouter>
-  </React.StrictMode>,
-)
+    </AppProvider>
+  </React.StrictMode>
+);
