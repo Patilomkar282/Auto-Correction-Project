@@ -151,11 +151,14 @@ app.post("/update/Tables", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body);
+ 
   if (req.body.username == "admin" && req.body.password == "admin") {
-    res.send({ success: true, session: "DJ06QPIFTAK4AWXB229J" });
+    res.send({ success: true, session: "DJ06QPIFTAK4AWXB229J" ,role:"admin"});
   }
-  res.send({ success: false });
+  else if (req.body.username == "operator" && req.body.password == "operator") {
+    res.send({ success: true, session: "DJ06QPIFTAK4AWXB229J" ,role:"operator"});
+  }
+  else {res.send({ success: false });}
 });
 
 app.get("/NewEntry", (req, res) => {
@@ -189,6 +192,7 @@ app.get("/Index", (req, res) => {
     res.status(200).send({ results });
   });
 });
+
 
 // app.get("/Semifinish", (req, res) => {
 //   const sql = `UPDATE Fields SET value = "False" WHERE field_name = "SemiFinish"`;
@@ -385,6 +389,16 @@ app.get("/Toolsvalue", (req, res) => {
   });
 });
 
+app.get("/usllsl", (req, res) => {
+  const sql = "SELECT USL, LSL FROM df LIMIT 1"; // Replace 'df' with your actual table name
+  connection.query(sql, (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json({ results: result });
+  });
+});
+
 
 
 
@@ -404,6 +418,23 @@ app.post("/addReason", (req, res) => {
           return res.status(500).json({ message: "Database insert failed" });
       }
       res.status(200).json({ message: "Reason added successfully!", results });
+  });
+});
+
+
+app.post('/logindetails', (req, res) => {
+  const { role } = req.body;
+  if (!role) {
+      return res.status(400).json({ success: false, message: "Role is required" });
+  }
+
+  const query = "INSERT INTO user_logins (username) VALUES (?)";
+  connection.query(query, [role], (err, result) => {
+      if (err) {
+          console.error('Error inserting data:', err);
+          return res.status(500).json({ success: false, message: "Database error" });
+      }
+      res.json({ success: true, message: "Login role stored successfully" });
   });
 });
 
@@ -434,8 +465,8 @@ app.get("/lastEntry", (req, res) => {
 });
 
 app.get("/extremeshift", (req, res) => {
-  console.log("Entering route");
-  const sql = `SELECT value, field_name FROM Fields WHERE field_name="Extreme_shift"`;
+ 
+  const sql = `SELECT value FROM fields WHERE field_name="Extremeshift"`;
   
   connection.query(sql, (err, results) => {
     if (err) {
@@ -514,28 +545,6 @@ app.get("/Home", (req, res) => {
     res.status(200).send({ results });
   });
 });
-
-
-
-
-
-
-// Start the server
-const port = 3006; // Choose a port number
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
-
-// app.ws('/Fields', function(ws, req) {
-//   //an event listener is set up for incoming WebSocket messages.
-// ws.on('message', function(msg) {
-
-// });
-// console.log('socket', req.testing);
-// });
-
-export default app;
-
 const checkFlag = () => {
   connection.query("SELECT * FROM Fields", (error, results) => {
     if (error) throw error;
@@ -558,10 +567,31 @@ const checkFlag = () => {
 
 // Periodically check the flag every 5 seconds
 setInterval(checkFlag, 100);
-
 app.ws("/ws", (ws, req) => {
+  console.log("New WebSocket client connected!");
+  
   clients.add(ws);
+
+  ws.on("message", (msg) => {
+    console.log("Received message:", msg);
+  });
+
   ws.on("close", () => {
+    console.log("WebSocket client disconnected");
     clients.delete(ws);
   });
+
+  // Send an initial message to confirm connection
+  ws.send(JSON.stringify({ message: "Connected to WebSocket server!" }));
 });
+
+
+
+// Start the server
+const port = 3006; // Choose a port number
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+
+
+export default app;
