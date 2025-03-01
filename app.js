@@ -155,8 +155,17 @@ app.post("/login", (req, res) => {
   if (req.body.username == "admin" && req.body.password == "admin") {
     res.send({ success: true, session: "DJ06QPIFTAK4AWXB229J" ,role:"admin"});
   }
-  else if (req.body.username == "operator" && req.body.password == "operator") {
-    res.send({ success: true, session: "DJ06QPIFTAK4AWXB229J" ,role:"operator"});
+  else if (req.body.username == "Omkar" && req.body.password == "Omkar") {
+    res.send({ success: true, session: "DJ06QPIFTAK4AWXB229A" ,role:"operator"});
+  }
+  else if (req.body.username == "Shravani" && req.body.password == "Shravani") {
+    res.send({ success: true, session: "DJ06QPIFTAK4AWXB229B" ,role:"operator"});
+  }
+  else if (req.body.username == "Prathmesh" && req.body.password == "Prathmesh") {
+    res.send({ success: true, session: "DJ06QPIFTAK4AWXB229C" ,role:"operator"});
+  }
+  else if (req.body.username == "Pratik" && req.body.password == "Pratik") {
+    res.send({ success: true, session: "DJ06QPIFTAK4AWXB229D" ,role:"operator"});
   }
   else {res.send({ success: false });}
 });
@@ -390,22 +399,14 @@ app.get("/Toolsvalue", (req, res) => {
 });
 
 app.get("/usllsl", (req, res) => {
- 
-
-  const sql = "SELECT Feature,USL, LSL FROM Df";  // double-check case of table and columns
-
+  const sql = "SELECT Feature, USL, LSL FROM Df;"; // Replace 'df' with your actual table name
   connection.query(sql, (err, result) => {
     if (err) {
-      console.error("Database query failed:", err);  // This logs exact MySQL error
-      return res.status(500).json({ error: "Database query failed", details: err.message });
+      return res.status(500).json({ error: "Database query failed" });
     }
-    console.log(result)
-
     res.json({ results: result });
   });
 });
-
-
 
 
 
@@ -431,18 +432,52 @@ app.post("/addReason", (req, res) => {
 
 
 app.post('/logindetails', (req, res) => {
-  const { role } = req.body;
-  if (!role) {
-      return res.status(400).json({ success: false, message: "Role is required" });
+  console.log("Request Body:", req.body); // Debugging
+
+  const { username } = req.body;
+  console.log("Myusername:", username);
+
+  if (!username) {
+      return res.status(400).json({ success: false, message: "Username is required" });
   }
 
-  const query = "INSERT INTO user_logins (username) VALUES (?)";
-  connection.query(query, [role], (err, result) => {
+  const query = `INSERT INTO user_logins (username,logged_in_at) VALUES (?,CURRENT_TIMESTAMP)`;
+  connection.query(query, [username], (err, result) => {
       if (err) {
           console.error('Error inserting data:', err);
           return res.status(500).json({ success: false, message: "Database error" });
       }
-      res.json({ success: true, message: "Login role stored successfully" });
+      res.json({ success: true, message: "Login username stored successfully" });
+  });
+});
+
+
+app.post('/logoutdetails', (req, res) => {
+  const { username } = req.body;
+  console.log("Yourusername",username);
+
+  if (!username) {
+      return res.status(400).json({ success: false, message: "Username is required" });
+  }
+
+  const query = `
+      UPDATE user_logins ul
+      JOIN (
+          SELECT id FROM user_logins 
+          WHERE username = ? 
+          AND logged_out_at IS NULL 
+          ORDER BY id DESC 
+          LIMIT 1
+      ) AS subquery ON ul.id = subquery.id
+      SET ul.logged_out_at = CURRENT_TIMESTAMP;
+  `;
+
+  connection.query(query, [username], (err, result) => {
+      if (err) {
+          console.error("Error updating logout time:", err);
+          return res.status(500).json({ success: false, message: "Database error" });
+      }
+      res.json({ success: true, message: "Logout time recorded successfully" });
   });
 });
 
@@ -476,7 +511,7 @@ app.get("/lastEntry", (req, res) => {
 
 app.get("/extremeshift", (req, res) => {
  
-  const sql = `SELECT value FROM Fields WHERE field_name="Extremeshift"`;
+  const sql = `SELECT value FROM Fields WHERE field_name="Extreme_shift"`;
   
   connection.query(sql, (err, results) => {
     if (err) {
