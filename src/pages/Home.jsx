@@ -612,7 +612,7 @@ export default function Home() {
         )
     }
     return (
-        <div className="p-3 pb-0 height-fluid position-relative">
+        <div className="p-3 pb-0 height-fluid position-relative" style={{minWidth:"75%"}}>
             <div className="container text-center dimmed-background ">
                 {/* <button onClick={togglePopup} className="btn btn-primary">Toggle Pop-up</button> */}
 
@@ -667,7 +667,10 @@ export default function Home() {
             {/* {ID_Readings && <Chart Readings={ID_Readings}></Chart>} */}
             {/* {OD_Readings && <Chart Readings={OD_Readings}></Chart>}       */}
             {Success && <FullWidthTabs width="fluid" height="" id_readings={ID_Readings} od_readings={OD_Readings} />}
-            <div style={{ display: "flex", marginLeft: "-150px", justifyContent: "center", gap: "20px", marginTop: "-40px" }}>
+        {!isPopupVisible && (
+
+            <>
+             <div style={{ display: "flex", marginLeft: "-150px", justifyContent: "center", gap: "20px", marginTop: "-40px" }}>
                 <button className='text-center text-dark pb-3 mb-0'
                     style={{
                         height: "32px",
@@ -708,6 +711,15 @@ export default function Home() {
                     ADD REASONS
                 </button>
             </div>
+            
+            
+            </>
+
+
+
+
+
+        )}
             {ispopupvisiblemsg && (
                 <div
                     style={{

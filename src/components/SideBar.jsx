@@ -20,7 +20,7 @@ export default function SideBar() {
     }
   }
   return (
-    <div className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style={{ width: "25%", fontSize:"0.9rem" }}>
+    <div className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style={{ width: "25%",height:"100vh", fontSize:"0.9rem" }}>
       <img className="mb-3 pb-3" src={athenalogo} />
       <ul className="nav nav-pills flex-column mb-auto">
       <li className="nav-item">
@@ -61,18 +61,30 @@ export default function SideBar() {
           </Link>
         </li>
 
+        <li>
+  <Link to="/login" className="nav-link text-white" onClick={async () => {
+      const username = localStorage.getItem("username"); // Retrieve stored username
+      if (username) {
+          await fetch('http://localhost:3006/logoutdetails', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username }) // Send username instead of token
+          });
+      }
+      // Clear credentials after logout
+      localStorage.removeItem("username");
+      localStorage.removeItem("role");
+      setUserCredentials(null);
+      navigate("/login");
+  }}>
+    <svg className="bi me-2 bi-sliders" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+      <path fillRule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z" />
+    </svg>
+    LOGOUT
+  </Link>
+</li>
 
-               <li>
-                  <Link to="/login" className={`nav-link text-white ${Page === "SetUpMode" ? "active bg-danger" : ""}`} onClick={()=>{
-            setUserCredentials(null)
-            navigate("/login")
-          }}>
-                    <svg className="bi me-2 bi-sliders" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                      <path fillRule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z" />
-                    </svg>
-                    LOGOUT
-                  </Link>
-                </li>
+
       
 
         {/* <li>

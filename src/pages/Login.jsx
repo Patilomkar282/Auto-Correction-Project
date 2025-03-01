@@ -69,10 +69,13 @@ console.log("AppContext inside Login:", contextValue);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const payload = JSON.stringify({
-      username: data.get('email'),
+
+    const information = {
+      username: data.get('email'), // Directly store as an object
       password: data.get('password'),
-    });
+      
+    };
+    localStorage.setItem("username",information.username)
 
     async function login() {
         const response = await fetch('http://localhost:3006/login', {
@@ -80,7 +83,8 @@ console.log("AppContext inside Login:", contextValue);
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: payload
+            body: JSON.stringify(information) 
+            // Stringify before sending
         });
 
         if (!response.ok) {
@@ -96,13 +100,14 @@ console.log("AppContext inside Login:", contextValue);
                 localStorage.setItem("role", JSON.stringify(userData.role));
                 setUserCredentials(userData);
 
-                // New request to store role in DB
+                
                 await fetch('http://localhost:3006/logindetails', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ role: data.role }) // Sending only role
+                    
+                    body: JSON.stringify({ username: information.username }) 
                 });
 
                 // Redirect based on role
@@ -118,6 +123,7 @@ console.log("AppContext inside Login:", contextValue);
     }
     await login();
 };
+
 
 
   return (<>

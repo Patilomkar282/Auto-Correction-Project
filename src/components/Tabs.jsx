@@ -169,7 +169,7 @@ useEffect(() => {
       
       
       <TabPanel value={value} index={0} dir={theme.direction}>
-      <Chart className="" Readings={props.id_readings || []} />
+      <Chart className="" Readings={props.id_readings || []} featureType="ID" />
 
   <p className='text-center bg-dark text-light pb-3 mb-0' style={{width: "100%", height:"80%"}}>
     
@@ -245,12 +245,12 @@ useEffect(() => {
 </TabPanel>
 
       <TabPanel value={value} index={1} dir={theme.direction}>
-        <Chart className="" Readings={props.od_readings} />
+        <Chart className="" Readings={props.od_readings} featureType="OD"/>
         <p className='text-center bg-dark text-light pb-3 mb-0' style={{width: "100%",height:"80%"}}>
         <span className={`badge text-dark ${(()=>{let current_readings = props.od_readings[props.od_readings.length-1]; 
         if(current_readings <= LSL) return "bg-danger"; 
         else if(current_readings >= USL) return "bg-warning"; 
-        else return "bg-success"})()}`} style={{fontSize:"16px",marginLeft:"-180px",fontWeight:"lighter",borderRadius:"30px"}}>
+        else return "bg-success"})()}`} style={{fontSize:"16px",fontWeight:"lighter",borderRadius:"30px"}}>
         CURRENT OD READING&nbsp;&nbsp;:&nbsp; {Math.round(props.od_readings[props.od_readings.length-1]*1000)/1000}
         </span>
         </p>
