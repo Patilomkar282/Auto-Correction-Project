@@ -25,6 +25,8 @@ export default function Home() {
     const [popupType, setPopupType] = useState(""); // "change_tool" or "add_reason"
 
     const [mypopup, setmypopup] = useState(false);
+    const [reason, setReason] = useState("");
+    const [currentReading, setCurrentReading] = useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [prevToolStatus, setPrevToolStatus] = useState(null);
     const [approvetool, setapprovetoll] = useState("");
@@ -322,10 +324,25 @@ export default function Home() {
 },[prevToolStatusRef])
 
 
-    const closePopup = () => {
-        setPopupVisible(false);
-        // fetch("http://localhost:3006/TOOL2value")
-    };
+
+
+    useEffect(() => {
+        const fetchCurrentReading = async () => {
+          try {
+            const response = await fetch("http://localhost:3006/currentreading");
+            const data = await response.json();
+            
+            // Assuming the result contains the `ID_Reading` in an array
+            if (data.length > 0) {
+              setCurrentReading(data[0].ID_Reading); // Adjust according to the structure of your response
+            }
+          } catch (err) {
+            console.error("Error fetching data:", err);
+          } 
+        };
+    
+        fetchCurrentReading();
+      }, []);
 
 
     const startMeasurement = async () => {
@@ -402,73 +419,95 @@ export default function Home() {
 
     const handleAddReasons = () => {
         setPopupType("add_reason");
-        setpopupvisiblemsg(true); // Show the popup
-
-        setPopMessage({
-            title: "Add Reason",
-            message: (
-                <>
-                    <div>
-                        <select
-                            id="toolSelect"
-                            style={{ padding: "10px", background: "#212529", color: "White", width: "100%" }}
-                            value={selectedTool} // Bind the value to state
-                            onChange={(e) => {
-                                let newSelectedReason = e.target.value;
-                                console.log(newSelectedReason);
-
-                                setSelectedTool(newSelectedReason); // Update selected reason
-
-                                if (newSelectedReason !== "Custom") {
-                                    setCustomReason(""); // Clear custom reason when another option is selected
-                                }
-                                if (newSelectedReason === "reason1" || newSelectedReason === "reason2" || newSelectedReason === "reason3" || newSelectedReason === "reason4") {
-                                    setapprovetoll(newSelectedReason);
-
-
-                                }
-                                else {
-                                    setapprovetoll("custom")
-                                }
-
-                                // Update the popup message dynamically whenever the state changes
-                                updatePopMessage(newSelectedReason);
-                            }}
-                        >
-                            <option value="">Select Reason</option> {/* Default option */}
-                            <option value="reason1">Reason 1</option>
-                            <option value="reason2">Reason 2</option>
-                            <option value="reason3">Reason 3</option>
-                            <option value="reason4">Reason 4</option>
-                            <option value="Custom">Custom</option>
-                        </select>
-                    </div>
-
-                    {/* Custom Reason Input (Appears only when "Custom" is selected) */}
-                    {selectedTool === "Custom" && (
-                        <input
-                            type="text"
-                            placeholder="Enter your custom reason..."
-                            value={customReason}
-                            onChange={(e) => setCustomReason(e.target.value)}
-                            style={{
-                                marginTop: "10px",
-                                padding: "10px",
-                                background: "#212529",
-                                color: "white",
-                                width: "100%",
-                                border: "1px solid #6c757d",
-                                borderRadius: "5px",
-                            }}
-                        />
-                    )}
-                </>
-            ),
-        });
+        setpopupvisiblemsg(true); 
+        setSelectedTool(""); 
+        setCustomReason(""); 
+        // Set the popup message dynamically
+        updatePopMessage("");
     };
 
+    useEffect(() => {
+        console.log("useEffect is running!"); // Debugging log
+    
+        const fetchReason = async () => {
+            try {
+                const response = await fetch("http://localhost:3006/fetchReason");
+                const data = await response.json();
+                console.log("Reason value:", data); // Check if this log prints
+    
+                if (data.value === "True") {
+                    setPopupVisible(true); // Show the popup if the Reason is "True"
+                    setPopMessage({
+                        title: "Reason Adding",
+                        message: (
+                            <>
+                                <button
+                                    className="btn btn-danger mr-[20px]"
+                                    onClick={updateReason} // Trigger the update on click
+                                    style={{ margin: "50px" }}
+                                >
+                                    OK
+                                </button>
+                            </>
+                        ),
+                    });
+                } else {
+                    console.log("Reason is not True, no popup triggered.");
+                }
+            } catch (error) {
+                console.error("Error fetching reason:", error);
+            }
+        };
+    
+        fetchReason();
+    }, []); 
+    
+
+    useEffect(() => {
+        // Logging the visibility of the popup
+        console.log("Popup Visible State: ", isPopupVisible);
+    }, [isPopupVisible]); // Track changes to the popupVisible state
+    
+    
+
+    const updateReason = async () => {
+        try {
+            const response = await fetch("http://localhost:3006/updateReason", {
+                method: "POST", // Send POST request to update the reason
+            });
+    
+            if (response.ok) {
+                // If the update is successful, close the popup
+                alert("Reason value updated to False!");
+                setPopupVisible(false); // Close the popup after the update is successful
+            } else {
+                console.log("Failed to update reason");
+            }
+        } catch (error) {
+            console.error("Error updating reason:", error);
+        }
+    };
+    
+    
+    
+      
+      
+  
+
+    const hanldedatachange = (e)=>{
+        setCustomReason((prev)=> prev + e.target.value)
+    }
     const updatePopMessage = (selectedValue) => {
         setPopupType("add_reason");
+        setSelectedTool(selectedValue);
+    
+        if (selectedValue !== "Custom") {
+            setapprovetoll(selectedValue);
+            setCustomReason(""); // Reset input when not custom
+        } else {
+            setapprovetoll("");
+        }
+    
         setPopMessage({
             title: "Add Reason",
             message: (
@@ -477,19 +516,10 @@ export default function Home() {
                         <select
                             id="toolSelect"
                             style={{ padding: "10px", background: "#212529", color: "White", width: "100%" }}
-                            value={selectedValue} // Use new value
-                            onChange={(e) => {
-                                let newSelectedReason = e.target.value;
-                                setSelectedTool(newSelectedReason);
-
-                                if (newSelectedReason !== "Custom") {
-                                    setCustomReason("");
-                                }
-
-                                updatePopMessage(newSelectedReason); // Update UI again
-                            }}
+                            value={selectedValue}
+                            onChange={(e) => updatePopMessage(e.target.value)}
                         >
-                            <option value="">Select Reason</option> {/* Default option */}
+                            <option value="">Select Reason</option>
                             <option value="reason1">Reason 1</option>
                             <option value="reason2">Reason 2</option>
                             <option value="reason3">Reason 3</option>
@@ -497,14 +527,15 @@ export default function Home() {
                             <option value="Custom">Custom</option>
                         </select>
                     </div>
-
-                    {/* Show input only when "Custom" is selected */}
+    
+                    {/* Custom Reason Input */}
                     {selectedValue === "Custom" && (
                         <input
                             type="text"
                             placeholder="Enter your custom reason..."
                             value={customReason}
-                            onChange={(e) => setCustomReason(e.target.value)}
+                            // Ensure state is updated correctly
+                            onChange={hanldedatachange} // Use the function outside
                             style={{
                                 marginTop: "10px",
                                 padding: "10px",
@@ -515,48 +546,55 @@ export default function Home() {
                                 borderRadius: "5px",
                             }}
                         />
+                        
                     )}
                 </>
+                
             ),
         });
-    };
-    // const handlereasonchange =()=>{
-    //     //   alert("Hello Omkar");
+        {console.log(customReason)} 
 
-    // }
+    };
+    
+
+    useEffect(() => {
+        console.log("Updated customReason:", customReason);
+    }, [customReason]); // Runs every time `customReason` changes
+    
+    
+    
+    
+    
+    
 
     const handleapprove = async () => {
-        if (!approvetool) {
+        if (!selectedTool) {
             alert("Please select a reason.");
             return;
         }
-
-
-        if (popupType === "change_tool") {
-
-            if (approvetool === "tool2") {
-                updatetool2();
-            } else if (approvetool === "tool3") {
-                updatetool3();
-            } else if (approvetool === "tool8") {
-                updatetool8();
-            }
-
-            setpopupvisiblemsg(false);
+    
+        let reasonToSend = selectedTool === "Custom" ? customReason : selectedTool;
+    
+        if (!reasonToSend.trim()) {
+            alert("Please enter a valid reason.");
             return;
         }
-
+    
         if (popupType === "add_reason") {
-
+            console.log("Myreading:",currentReading);
             try {
                 const response = await fetch("http://localhost:3006/addReason", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ reason: approvetool }),
+                    body: JSON.stringify({
+                        reason: reasonToSend,            // The reason to send
+                        currentReading: currentReading   // The current reading ID from state
+                    }),
                 });
-
+    
                 const data = await response.json();
                 if (response.ok) {
+                    alert("Reason added successfully!");
                     setpopupvisiblemsg(false);
                 } else {
                     alert("Failed to add reason: " + data.message);
@@ -566,12 +604,11 @@ export default function Home() {
                 alert("Error adding reason.");
             }
         }
-
-
-
+    
         setSelectedTool("");
+        setCustomReason(""); // Reset input
         setpopupvisiblemsg(false);
-    }
+    };
 
     const handleClosePopup = () => {
         setpopupvisiblemsg(false);
@@ -715,69 +752,73 @@ export default function Home() {
             
             </>
 
-
-
-
-
         )}
-            {ispopupvisiblemsg && (
-                <div
-                    style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
-                >
-                    <div
-                        style={{
-                            backgroundColor: "#212529",
-                            padding: "20px",
+          {ispopupvisiblemsg && (
+    <div
+        style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+        }}
+    >
+        <div
+            style={{
+                backgroundColor: "#212529",
+                padding: "20px",
+                borderRadius: "8px",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                width: "500px",
+                height: "250px",
+                textAlign: "center",
+                zIndex: "1000",
+            }}
+        >
+            <h2 style={{ color: 'white' }}>{popMessage.title}</h2>
+            <div>{popMessage.message}</div>
 
-                            borderRadius: "8px",
-                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                            width: "500px",
-                            height: "250px",
-                            textAlign: "center",
-                            zIndex: "1000"
+            {/* Show buttons only if popupType is NOT 'add_reason' */}
+            {popupType !== "reason_adding" && (
+                <>
+                    <button
+                        onClick={handleapprove}
+                        style={{
+                            marginTop: "15px",
+                            padding: "10px 20px",
+                            backgroundColor: "#DC3545",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
                         }}
                     >
-                        <h2 style={{ color: 'white' }}>{popMessage.title}</h2>
-                        <div>{popMessage.message}</div>
-                        <button
-                            onClick={handleapprove}
-                            style={{
-                                marginTop: "15px",
-                                padding: "10px 20px",
-                                backgroundColor: "#DC3545",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "5px",
-                                cursor: "pointer",
-                            }}
-                        >
-                            Approve
-                        </button>
-                        <button onClick={handleClosePopup}
-                            style={{
-                                marginTop: "15px",
-                                margin: "15px",
-                                padding: "10px 20px",
-                                backgroundColor: "#DC3545",
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "5px",
-                                cursor: "pointer",
-                            }}>Close</button>
-                    </div>
-                </div>
+                        Approve
+                    </button>
+                    <button
+                        onClick={handleClosePopup}
+                        style={{
+                            marginTop: "15px",
+                            margin: "15px",
+                            padding: "10px 20px",
+                            backgroundColor: "#DC3545",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                        }}
+                    >
+                        Close
+                    </button>
+                </>
             )}
-
+        </div>
+    </div>
+)}
         </div>
     );
     // {/* <p>ID_READING : {ID_Readings[ID_Readings.length-1]} OD_READING : {OD_Readings[OD_Readings.length-1]}</p> */}
