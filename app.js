@@ -89,6 +89,18 @@ app.get("/Readings", (req, res) => {
   });
 });
 
+app.get("/currentreading", (req, res) => {
+const sql = `SELECT ID_Reading FROM Readings ORDER BY ID DESC LIMIT 1;
+`;
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database test query failed:", err.message);
+      return res.status(505).send("Database test query failed");
+    }
+    res.send(results);
+  });
+});
+
 app.get("/Tables", (req, res) => {
   const sql = `SELECT * FROM Df ORDER BY ID`;
   connection.query(sql, (err, results) => {
@@ -155,16 +167,16 @@ app.post("/login", (req, res) => {
   if (req.body.username == "admin" && req.body.password == "admin") {
     res.send({ success: true, session: "DJ06QPIFTAK4AWXB229J" ,role:"admin"});
   }
-  else if (req.body.username == "Omkar" && req.body.password == "Omkar") {
+  else if (req.body.username == "Anand" && req.body.password == "Anand") {
     res.send({ success: true, session: "DJ06QPIFTAK4AWXB229A" ,role:"operator"});
   }
-  else if (req.body.username == "Shravani" && req.body.password == "Shravani") {
+  else if (req.body.username == "Akshay" && req.body.password == "Akshay") {
     res.send({ success: true, session: "DJ06QPIFTAK4AWXB229B" ,role:"operator"});
   }
-  else if (req.body.username == "Prathmesh" && req.body.password == "Prathmesh") {
+  else if (req.body.username == "Bhima" && req.body.password == "Bhima") {
     res.send({ success: true, session: "DJ06QPIFTAK4AWXB229C" ,role:"operator"});
   }
-  else if (req.body.username == "Pratik" && req.body.password == "Pratik") {
+  else if (req.body.username == "Satish" && req.body.password == "Satish") {
     res.send({ success: true, session: "DJ06QPIFTAK4AWXB229D" ,role:"operator"});
   }
   else {res.send({ success: false });}
@@ -413,22 +425,27 @@ app.get("/usllsl", (req, res) => {
 
 
 app.post("/addReason", (req, res) => {
-  const { reason } = req.body; // Get reason from request body
+  const { reason, currentReading } = req.body; // Get reason and currentReading from request body
 
-  if (!reason) {
-      return res.status(400).json({ message: "Reason is required" });
+  // Check if both reason and currentReading are provided
+  if (!reason || !currentReading) {
+    return res.status(400).json({ message: "Reason and current reading are required" });
   }
 
-  const sql = "INSERT INTO reasons (reason) VALUES (?)";
-  
-  connection.query(sql, [reason], (err, results) => {
-      if (err) {
-          console.error("Database insert failed:", err.message);
-          return res.status(500).json({ message: "Database insert failed" });
-      }
-      res.status(200).json({ message: "Reason added successfully!", results });
+  // SQL query to insert both reason and currentReading into the table
+  const sql = "INSERT INTO reasons (reason, ID_Reading) VALUES (?, ?)";
+
+  connection.query(sql, [reason, currentReading], (err, results) => {
+    if (err) {
+      console.error("Database insert failed:", err.message);
+      return res.status(500).json({ message: "Database insert failed" });
+    }
+
+    // Send success response
+    res.status(200).json({ message: "Reason and current reading added successfully!", results });
   });
 });
+
 
 
 app.post('/logindetails', (req, res) => {
@@ -441,7 +458,7 @@ app.post('/logindetails', (req, res) => {
       return res.status(400).json({ success: false, message: "Username is required" });
   }
 
-  const query = `INSERT INTO user_logins (username,logged_in_at) VALUES (?,CURRENT_TIMESTAMP)`;
+  const query = `INSERT INTO user_logins (username,logged_in_at) VALUES (?,UNIX_TIMESTAMP())`;
   connection.query(query, [username], (err, result) => {
       if (err) {
           console.error('Error inserting data:', err);
@@ -469,7 +486,7 @@ app.post('/logoutdetails', (req, res) => {
           ORDER BY id DESC 
           LIMIT 1
       ) AS subquery ON ul.id = subquery.id
-      SET ul.logged_out_at = CURRENT_TIMESTAMP;
+      SET ul.logged_out_at = UNIX_TIMESTAMP();
   `;
 
   connection.query(query, [username], (err, result) => {
@@ -629,6 +646,58 @@ app.ws("/ws", (ws, req) => {
   // Send an initial message to confirm connection
   ws.send(JSON.stringify({ message: "Connected to WebSocket server!" }));
 });
+
+
+app.get("/fetchReason", (req, res) => {
+  const sql = 'SELECT value FROM Fields WHERE field_name = "Reason"';
+  
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database query failed:", err.message);
+      return res.status(500).send({ error: "Database query failed" });
+    }
+
+    if (results.length > 0) {
+      const reasonValue = results[0].value;
+      console.log("Fetched reason from DB:", reasonValue); // Debug log
+
+      res.status(200).json({ value: reasonValue }); // Ensure it's JSON format
+    } else {
+      res.status(404).json({ message: "Reason not found", value: "False" });
+    }
+  });
+});
+
+
+app.get("/reasonupdate", (req, res) => {
+  const sql = 'SELECT value FROM Fields WHERE field_name = "Reason"';
+  
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error("Database query failed:", err.message);
+      return res.status(505).send("Database query failed");
+    }
+
+    if (results.length > 0 && results[0].value === "True") {
+      // If the value of Reason is 'true'
+      const updateSql = 'UPDATE Fields SET value = "False" WHERE field_name = "Reason"';
+      
+      // Execute the update to set Reason to 'false'
+      connection.query(updateSql, (err, updateResults) => {
+        if (err) {
+          console.error("Database update failed:", err.message);
+          return res.status(505).send("Database update failed");
+        }
+        res.status(200).send({ message: "Reason value is True, updated to false", updateResults });
+      });
+    } else {
+      // If the value is not 'true', don't trigger any update
+      res.status(200).send({ message: "Reason value is not true" });
+    }
+  });
+});
+
+
 
 
 
