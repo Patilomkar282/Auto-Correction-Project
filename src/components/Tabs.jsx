@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Chart from "../components/Chart"
 import ScrollingWarning from '../components/ScrollingWarning';
 import "../assets/tabs.css"
-import { useState,useEffect } from 'react';
+import {useEffect,useRef } from 'react';
 import StatsCards from './StatsCards';
 
 function TabPanel(props) {
@@ -49,6 +49,7 @@ function a11yProps(index) {
 }
 
 export default function FullWidthTabs(props) {
+  const socketRef=useRef(null);
  
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -80,25 +81,43 @@ useEffect(() => {
 }, []);
 
 
+// useEffect(() => {
+//   async function reqdata() {
+//     try {
+//       const response = await fetch('http://localhost:3006/extremeshift');
+//       if (!response.ok) {
+//         alert("Data not received");
+//       } else {
+//         const data = await response.json(); // Parse response
+//         console.log("Extreme:", data.results[0].value);
+//         const shiftValue = data.results[0].value; 
+//         setExtremeShift(shiftValue);
+//       }
+//     } catch (error) {
+//       console.log("Data not fetched", error);
+//     } 
+//   }
+
+//   reqdata();
+// }, []); 
+
+
 useEffect(() => {
   async function reqdata() {
-    try {
-      const response = await fetch('http://localhost:3006/extremeshift');
-      if (!response.ok) {
-        alert("Data not received");
-      } else {
-        const data = await response.json(); // Parse response
-        console.log("Extreme:", data.results[0].value);
-        const shiftValue = data.results[0].value === "True"; 
-        setExtremeShift(shiftValue);
-      }
-    } catch (error) {
-      console.log("Data not fetched", error);
-    } 
+    if (!socketRef.current) {
+      socketRef.current = new WebSocket("ws://localhost:3006/ws");
+    
+          socketRef.current.onmessage = async (event) => {
+            const data = JSON.parse(event.data);
+            console.log("Extremevalue",data.Extreme_shift)
+           
+            setExtremeShift(data.Extreme_shift);
+          } 
   }
-
-  reqdata();
-}, []); 
+}
+reqdata();
+}
+);
 
 
 // useEffect(() => {
@@ -256,7 +275,7 @@ useEffect(() => {
         </p>
       
       </TabPanel>
-      {extremeshift ?  <ScrollingWarning/> : <div
+      {/* {extremeshift ?  <ScrollingWarning/> : <div
       style={{
         top: "50px",
         height: "50px",
@@ -265,7 +284,29 @@ useEffect(() => {
         background: "#212529",
         color: "yellow",
       }}
-    ></div>}
+    ></div>} */}
+
+
+{extremeshift === "True" && (
+      <ScrollingWarning/>
+    )}
+
+{extremeshift === "False" && (
+     <>
+     <div
+      style={{
+        top: "50px",
+        height: "50px",
+        overflow: "hidden",
+        position: "relative",
+        background: "#212529",
+        color: "yellow",
+      }}
+    ></div>
+
+     
+     </>
+    )}
 
 
      

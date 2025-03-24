@@ -17,16 +17,6 @@ export default function Oee() {
     
     const { Page, setPage, userCredentials, setUserCredentials } = React.useContext(AppContext);
     setPage("oee");
-
-
-  
-   
-
-
-    
-            
-    
-    
     
     if (!userCredentials) {
         return (
