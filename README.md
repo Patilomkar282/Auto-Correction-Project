@@ -207,6 +207,7 @@ The setup mode is used to set the upper and lower specification limits for each 
 
 The table page shows the data from the database in a table format. The user can select which table to view and sort the data by any column. The user can also filter the data by any column. The user can also add new data to the table by clicking the "Add new data" button. The user can edit and delete data by clicking the "Edit" and "Delete" buttons respectively.
 
+
 <table>
   <tr>
     <td style="text-align: center; vertical-align: top;">
