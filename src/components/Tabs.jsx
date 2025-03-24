@@ -124,46 +124,6 @@ reqdata();
 }
 );
 
-
- 
-
-
-
-
-// useEffect(() => {
-//   console.log('useEffect triggered');
-
-//   const fetchData = async () => {
-//     try {
-//       const res = await fetch('http://localhost:3006/extremeshift');
-      
-//       // Check if the response is ok
-//       if (!res.ok) {
-//         throw new Error(`HTTP error! status: ${res.status}`);
-//       }
-
-//       const data = await res.json();
-//       console.log(data); // Log the entire response
-
-//       // Assuming you want the value of Extreme_shift
-//       const extremeShiftValue = data.results.find(item => item.field_name === "Extreme_shift");
-//       if (extremeShiftValue) {
-//         setExtremeLeft(extremeShiftValue.value); // Set the value
-//       }
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     }
-//   };
-
-//   fetchData();
-// }, []);  // Add dependency array to run only once
-
-// const socket = new WebSocket('ws://localhost:3006/ws');
-
-
-
-  
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

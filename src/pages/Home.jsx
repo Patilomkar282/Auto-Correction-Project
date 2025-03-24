@@ -102,14 +102,29 @@ export default function Home() {
             fetchReadings();
         }
     })
+   const updateReason = async () => {
+    try {
+        const response = await fetch("http://localhost:3006/updateReason", {
+            method: "PUT", 
+        });
+
+        if (response.ok) {
+            setPopupVisible(false); 
+        } else {
+            console.log("Failed to update reason");
+        }
+    } catch (error) {
+        console.error("Error updating reason:", error);
+    }
+};
+
     useEffect(() => {
         if (!socketRef.current) { // Prevent multiple connections
           socketRef.current = new WebSocket("ws://localhost:3006/ws");
     
           socketRef.current.onmessage = async (event) => {
             const data = JSON.parse(event.data);
-            
-    
+            setReason(data.Reason);
             if (data.ZERO !== "True") {
               setPopMessage({
                 title: "Zero Calibration",
@@ -121,6 +136,7 @@ export default function Home() {
               return;
             }
     
+            
             if (data.HIGH !== "True") {
               setPopMessage({
                 title: "High Calibration",
@@ -153,6 +169,7 @@ export default function Home() {
               setShowProgress(true);
               return;
             }
+            
     
             if (data.START !== "True") {
               console.log("Success Before", Success);
@@ -191,14 +208,9 @@ export default function Home() {
                 setPopupVisible(true);
                 return;
               }
-    
-              if (data.NEW_ENTRY === "True") {
-                setNEW_ENTRY(true);
-                fetchReadings();
-                return;
-              }
+            }
 
-              if(data.Reason==="True"){
+            if(data.Reason==="True"){
                 setPopMessage({
                     title: "Reason Adding",
                                 message: (
@@ -206,27 +218,36 @@ export default function Home() {
                                         <button
                                             className="btn btn-danger mr-[20px]"
                                             onClick={updateReason} 
-                                            style={{ margin: "50px" }}
+                                            style={{ margin: "50px" ,width:"200px",height:"60px" }}
                                         >
                                             OK
                                         </button>
                                     </>
                                 ),
                   });
-                  setProgress(80);
+                //   setProgress(80);
                   setPopupVisible(true);
-                  setShowProgress(true);
+                  setShowProgress(false);
                   return;
 
               }
+            
+
+
+    
+              if (data.NEW_ENTRY === "True") {
+                setNEW_ENTRY(true);
+                fetchReadings();
+                return;
+              }
               return;
             }
-          };
+          }
     
           socketRef.current.onclose = () => {
             console.log("WebSocket closed");
           };
-        }
+        
     
         return () => {
           if (socketRef.current) {
@@ -257,8 +278,8 @@ export default function Home() {
 
                // Handle popup conditions
              if (toolStatus.TOOL2 === "True") {
-                console.log("Omkar")
                 setmypopup(true);
+                setShowProgress(false);
                 setPopMessage({
                     title: "Check Roughing Insert",
                     message: (
@@ -294,6 +315,7 @@ export default function Home() {
                 });
              } else if (toolStatus.TOOL3 === "True") {
                 setmypopup(true);
+                setShowProgress(false);
                 setPopMessage({
                     title: "Check SemiFinish",
                     message: (
@@ -330,6 +352,7 @@ export default function Home() {
                 });
              } else if (toolStatus.TOOL8 === "True") {
                 setmypopup(true);
+                setShowProgress(false);
                 setPopMessage({
                     title: "Check Insert Indexing",
                     message: (
@@ -392,25 +415,24 @@ export default function Home() {
 
 
 useEffect(() => {
-  async function fetchCurrentReading() {
-    console.log("qwe");
-    console.log(socketRef.current);
-    
-    if (!socketRef.current) {
-      socketRef.current = new WebSocket("ws://localhost:3006/ws");
-          socketRef.current.onmessage = async (event) => {
-            const data = JSON.parse(event.data);
-            console.log("Received data:",data.ID_Reading);
-           
-            setCurrentReading(data.ID_Reading);
-            console.log("reading is",currentReading)
-            
-          } 
-  }
-}
-fetchCurrentReading();
-},[]
-);
+    const socket = new WebSocket("ws://localhost:3006/ws");
+  
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.ID_Reading) {
+        setCurrentReading(data.ID_Reading);
+      }
+    };
+  
+    socket.onerror = (error) => {
+      console.error("WebSocket Error:", error);
+    };
+  
+    return () => {
+      socket.close(); // Cleanup on unmount
+  };
+  },[]);
+
 
   
 
@@ -540,32 +562,6 @@ fetchCurrentReading();
         // Logging the visibility of the popup
         console.log("Popup Visible State: ", isPopupVisible);
     }, [isPopupVisible]); // Track changes to the popupVisible state
-    
-    
-
-    const updateReason = async () => {
-        try {
-            const response = await fetch("http://localhost:3006/updateReason", {
-                method: "POST", // Send POST request to update the reason
-            });
-    
-            if (response.ok) {
-                // If the update is successful, close the popup
-                alert("Reason value updated to False!");
-                setPopupVisible(false); // Close the popup after the update is successful
-            } else {
-                console.log("Failed to update reason");
-            }
-        } catch (error) {
-            console.error("Error updating reason:", error);
-        }
-    };
-    
-    
-    
-      
-      
-  
 
     const hanldedatachange = (e)=>{
         setCustomReason((prev)=> prev + e.target.value)
