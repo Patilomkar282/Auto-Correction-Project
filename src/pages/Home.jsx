@@ -15,6 +15,7 @@ import { red } from '@mui/material/colors';
 import { rgbToHex } from '@mui/material';
 
 export default function Home() {
+    
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -23,6 +24,8 @@ export default function Home() {
     setPage("Calibration");
     const [isPopupVisible, setPopupVisible] = useState(true);
     const [popupType, setPopupType] = useState(""); // "change_tool" or "add_reason"
+    const socketRef = useRef(null);
+    const [Success, setSuccess] = useState(false);
 
     const [mypopup, setmypopup] = useState(false);
     const [reason, setReason] = useState("");
@@ -41,7 +44,7 @@ export default function Home() {
     const [ID_Readings, setID_Readings] = useState([]);
     // eslint-disable-next-line no-unused-vars
     const [OD_Readings, setOD_Readings] = useState([]);
-    const [Success, setSuccess] = useState(false);
+    // const [Success, setSuccess] = useState(false);
     const [ispopupvisiblemsg, setpopupvisiblemsg] = useState(false);
     const [isReasonvisible, setReasonvisible] = useState(false)
     const [NEW_ENTRY, setNEW_ENTRY] = useState(true);
@@ -100,97 +103,138 @@ export default function Home() {
         }
     })
     useEffect(() => {
-        const socket = new WebSocket('ws://localhost:3006/ws');
-        socket.onmessage = async (event) => {
+        if (!socketRef.current) { // Prevent multiple connections
+          socketRef.current = new WebSocket("ws://localhost:3006/ws");
+    
+          socketRef.current.onmessage = async (event) => {
             const data = JSON.parse(event.data);
-            //console.log(data);
+            
+    
             if (data.ZERO !== "True") {
-                setPopMessage({
-                    title: "Zero Callibration",
-                    message: "Put Zero Callibrtion Master in Gauge"
-                })
-                setProgress(32);
-                setPopupVisible(true);
-                setShowProgress(true);
-                return;
+              setPopMessage({
+                title: "Zero Calibration",
+                message: "Put Zero Calibration Master in Gauge",
+              });
+              setProgress(32);
+              setPopupVisible(true);
+              setShowProgress(true);
+              return;
             }
-
+    
             if (data.HIGH !== "True") {
-                setPopMessage({
-                    title: "High Callibration",
-                    message: "Put High Callibrtion Master in Gauge"
-                })
-                setProgress(48);
-                setPopupVisible(true);
-                setShowProgress(true);
-                return
+              setPopMessage({
+                title: "High Calibration",
+                message: "Put High Calibration Master in Gauge",
+              });
+              setProgress(48);
+              setPopupVisible(true);
+              setShowProgress(true);
+              return;
             }
-
+    
             if (data.LOW !== "True") {
-                setPopMessage({
-                    title: "Low Callibration",
-                    message: "Put Low Callibrtion Master in Gauge"
-                })
-                setProgress(64);
-                setPopupVisible(true);
-                setShowProgress(true);
-                return;
+              setPopMessage({
+                title: "Low Calibration",
+                message: "Put Low Calibration Master in Gauge",
+              });
+              setProgress(64);
+              setPopupVisible(true);
+              setShowProgress(true);
+              return;
             }
+    
             if (data.MEDIUM !== "True") {
-                setPopMessage({
-                    title: "Medium Callibration",
-                    message: "Put Medium Callibrtion Master in Gauge"
-                })
-                setProgress(80);
-                setPopupVisible(true);
-                setShowProgress(true);
-                return;
+              setPopMessage({
+                title: "Medium Calibration",
+                message: "Put Medium Calibration Master in Gauge",
+              });
+              setProgress(80);
+              setPopupVisible(true);
+              setShowProgress(true);
+              return;
             }
-
+    
             if (data.START !== "True") {
-                console.log("Sucess BEfore", Success);
-                setPopMessage({
-                    title: "SUCCESS",
-                    message: "Calibration Successfull"
-                })
-                setProgress(100);
-                setShowProgress(true);
-                setPopupVisible(true);
-                await fetch("http://localhost:3006/Start");
-                return;
+              console.log("Success Before", Success);
+              setPopMessage({
+                title: "SUCCESS",
+                message: "Calibration Successful",
+              });
+              setProgress(100);
+              setShowProgress(true);
+              setPopupVisible(true);
+              await fetch("http://localhost:3006/Start");
+              return;
             } else {
-                setPopupVisible(false);
-                setSuccess(true);
-
-                if (data.TOOL_BROKEN === "True") {
-                    setSuccess(false);
-                    setPopMessage({
-                        title: "TOOL BROKEN",
-                        message: (<button className="btn btn-danger" onClick={() => { fetch("http://localhost:3006/Tool"); setPopupVisible(false); setSuccess(true) }}>TOOL FIXED!</button>)
-                    })
-
-                    setShowProgress(false);
-                    setPopupVisible(true);
-                    return;
-                }
-
-                if (data.NEW_ENTRY === "True") {
-                    setNEW_ENTRY(true);
-                    fetchReadings();
-                    return;
-                }
+              setPopupVisible(false);
+              setSuccess(true);
+    
+              if (data.TOOL_BROKEN === "True") {
+                setSuccess(false);
+                setPopMessage({
+                  title: "TOOL BROKEN",
+                  message: (
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => {
+                        fetch("http://localhost:3006/Tool");
+                        setPopupVisible(false);
+                        setSuccess(true);
+                      }}
+                    >
+                      TOOL FIXED!
+                    </button>
+                  ),
+                });
+    
+                setShowProgress(false);
+                setPopupVisible(true);
                 return;
-            }
+              }
+    
+              if (data.NEW_ENTRY === "True") {
+                setNEW_ENTRY(true);
+                fetchReadings();
+                return;
+              }
 
+              if(data.Reason==="True"){
+                setPopMessage({
+                    title: "Reason Adding",
+                                message: (
+                                    <>
+                                        <button
+                                            className="btn btn-danger mr-[20px]"
+                                            onClick={updateReason} 
+                                            style={{ margin: "50px" }}
+                                        >
+                                            OK
+                                        </button>
+                                    </>
+                                ),
+                  });
+                  setProgress(80);
+                  setPopupVisible(true);
+                  setShowProgress(true);
+                  return;
+
+              }
+              return;
+            }
+          };
+    
+          socketRef.current.onclose = () => {
+            console.log("WebSocket closed");
+          };
         }
+    
         return () => {
-            if (socket.readyState === 1) {
-                socket.close();
-            }
-
-
-        }
-    }, []);
+          if (socketRef.current) {
+            socketRef.current.close();
+            socketRef.current = null; // Reset ref
+          }
+        };
+      }, []);
 
   useEffect(()=>
     {
@@ -326,23 +370,49 @@ export default function Home() {
 
 
 
-    useEffect(() => {
-        const fetchCurrentReading = async () => {
-          try {
-            const response = await fetch("http://localhost:3006/currentreading");
-            const data = await response.json();
-            
-            // Assuming the result contains the `ID_Reading` in an array
-            if (data.length > 0) {
-              setCurrentReading(data[0].ID_Reading); // Adjust according to the structure of your response
-            }
-          } catch (err) {
-            console.error("Error fetching data:", err);
-          } 
-        };
+// useEffect(() => {
+//     const fetchCurrentReading = async () => {
+//       try {
+//         const response = await fetch("http://localhost:3006/currentreading");
+//         const data = await response.json();
+//         console.log("Current reading is:", data);
+  
+//         // Correctly access the nested array inside `values`
+//         if (data.values && data.values.length > 0) {
+//           setCurrentReading(data.values[0].ID_Reading); // Access inside `values`
+//         }
+//       } catch (err) {
+//         console.error("Error fetching data:", err);
+//       }
+//     };
+  
+//     fetchCurrentReading();
+//   }, []);
+
+
+
+useEffect(() => {
+  async function fetchCurrentReading() {
+    console.log("qwe");
+    console.log(socketRef.current);
     
-        fetchCurrentReading();
-      }, []);
+    if (!socketRef.current) {
+      socketRef.current = new WebSocket("ws://localhost:3006/ws");
+          socketRef.current.onmessage = async (event) => {
+            const data = JSON.parse(event.data);
+            console.log("Received data:",data.ID_Reading);
+           
+            setCurrentReading(data.ID_Reading);
+            console.log("reading is",currentReading)
+            
+          } 
+  }
+}
+fetchCurrentReading();
+},[]
+);
+
+  
 
 
     const startMeasurement = async () => {
@@ -426,41 +496,44 @@ export default function Home() {
         updatePopMessage("");
     };
 
-    useEffect(() => {
-        console.log("useEffect is running!"); // Debugging log
+    // useEffect(() => {
+    //     console.log("useEffect is running!"); // Debugging log
+    //     const fetchReason = async () => {
+    //         try {
+    //             if (!socketRef.current) {
+    //                 socketRef.current = new WebSocket("ws://localhost:3006/ws");
+                  
+    //                     socketRef.current.onmessage = async (event) => {
+    //                       const data = JSON.parse(event.data);
+    //                       console.log("Reason value:", data.Reason); 
+    //                       if (data.value === "True") {
+    //                         setPopupVisible(true); 
+    //                         setPopMessage({
+    //                             title: "Reason Adding",
+    //                             message: (`
+    //                                 <>
+    //                                     <button
+    //                                         className="btn btn-danger mr-[20px]"
+    //                                         onClick={updateReason} // Trigger the update on click
+    //                                         style={{ margin: "50px" }}
+    //                                     >
+    //                                         OK
+    //                                     </button>
+    //                                 </>
+    //                             ),
+    //                         });
+    //                     } else {
+    //                         console.log("Reason is not True, no popup triggered.");
+    //                     }
+    //                     }
+    //                 }
+    //         } catch (error) {
+    //             console.error("Error fetching reason:", error);
+    //         }
+    //     };
     
-        const fetchReason = async () => {
-            try {
-                const response = await fetch("http://localhost:3006/fetchReason");
-                const data = await response.json();
-                console.log("Reason value:", data); // Check if this log prints
-    
-                if (data.value === "True") {
-                    setPopupVisible(true); // Show the popup if the Reason is "True"
-                    setPopMessage({
-                        title: "Reason Adding",
-                        message: (
-                            <>
-                                <button
-                                    className="btn btn-danger mr-[20px]"
-                                    onClick={updateReason} // Trigger the update on click
-                                    style={{ margin: "50px" }}
-                                >
-                                    OK
-                                </button>
-                            </>
-                        ),
-                    });
-                } else {
-                    console.log("Reason is not True, no popup triggered.");
-                }
-            } catch (error) {
-                console.error("Error fetching reason:", error);
-            }
-        };
-    
-        fetchReason();
-    }, []); 
+    //     fetchReason();
+    // }, []); 
     
 
     useEffect(() => {
