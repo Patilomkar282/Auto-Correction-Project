@@ -117,8 +117,42 @@ CREATE TABLE Df (
     PRIMARY KEY (ID)
 );
 ```
+4. Reason Table:
+   
+| Column Name  | Data Type                           | Description                         |
+| ------------ | ----------------------------------- | ----------------------------------- |
+| `reason`     | `varchar(50)`                       | Reason adde when tool changes.      |
+| `updated_at` | `BIGINT(20)`                        | Time at which reason added.         |
+| `ID_Reading` | `VARCHAR(50)`                       | Store the current ID_Reading of job.|
 
-4. Triggers to set
+```
+CREATE TABLE Reason (
+    reason VARCHAR(50) NULL,
+    updated_at BIGINT NULL,
+    ID_Reading VARCHAR(20) NULL
+);
+```
+
+5. User Login Table:
+   
+| Column Name  | Data Type                           | Description                         |
+| ------------ | ----------------------------------- | ----------------------------------- |
+| ` id   `     | `INT AUTO_INCREMENT PRIMARY KEY`    | Reason adde when tool changes.      |
+| `username  ` | `VARCHAR(50)`                       | Time at which reason added.         |
+| `logged_in_at` | `BIGINT NULL`                     | Store the current ID_Reading of job.|
+| `logged_out_at` | `BIGINT NULL`                    | Store the current ID_Reading of job.|
+
+```
+CREATE TABLE user_logins (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    logged_in_at BIGINT NULL,
+    logged_out_at BIGINT NULL
+);
+
+```
+
+6. Triggers to set
 
 ```
 CREATE TRIGGER check_before_insert
@@ -230,3 +264,93 @@ The table page shows the data from the database in a table format. The user can 
     </td>
   </tr>
 </table>
+
+
+### 4.OEE Chart:
+
+The OEE (Overall Equipment Effectiveness) Chart Page visually represents key performance indicators of a manufacturing or production system. It includes:
+Features:
+   1. Gauge Chart for OEE
+   2. Displays the Overall Equipment Effectiveness (OEE) percentage.
+   3. Uses a color-coded dial to indicate performance levels (Red: Poor, Orange: Average, Green: Good).
+   4. The needle points to the current OEE value (e.g., 80%).
+
+Key Performance Metrics
+   1. Availability: Measures the actual running time vs. planned production time (92.5%).
+   2. Performance: Evaluates production speed relative to the ideal speed (87.8%).
+   3. Quality: Represents the percentage of defect-free products (95.3%).
+   4. Each metric is displayed in a colored card for better visualization.
+
+Purpose:
+   1. Helps monitor production efficiency in real-time.
+   2. Identifies areas of improvement by analyzing availability, performance, and quality.
+   3. Provides a quick overview of machine productivity using an intuitive graphical representation.
+
+<img src="./Images/OEE.png" width=50%>
+
+### 4.Change Tool Popups:
+
+1. The Insert Indexing Pop-up Check ensures that the cutting tool insert is correctly positioned and indexed before machining begins, which is crucial for maintaining precision and consistency in CNC machining. 
+   It helps in tool alignment, optimizes tool life by ensuring even wear, enhances process efficiency by minimizing manual intervention, and reduces defective parts by preventing machining errors.
+
+2. The Roughing Insert Pop-up Check verifies the condition and placement of the roughing insert, which is responsible for the initial material removal. This check prevents tool breakage by detecting worn-out or 
+   misaligned inserts, improves surface finish by ensuring uniform material removal, increases production speed by optimizing cutting performance, and reduces material waste by preventing defective roughing 
+   passes.
+
+3. The Semi-Finish Pop-up Check assesses the condition of the semi-finishing insert before the final finishing pass, ensuring a smooth transition from roughing to finishing operations. It maintains dimensional 
+   accuracy by detecting insert wear or improper placement, reduces machine downtime by preventing tool-related errors, and improves surface quality for better finishing results. These pop-up checks are 
+   essential for the auto-correction system in CNC machining at Athena Automation, enabling real-time monitoring, higher machining precision, reduced defects, and increased productivity.
+
+   <table>
+  <tr>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./Images/PopUp-checkInsertIndexing.png'/>
+      <p style="margin: auto;text-align: center;" align="center">Check InsertIndexing</p>
+    </td>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./Images/PopUp-CheckRoughingInsert.png'  />
+      <p style="margin: auto;text-align: center;" align="center">Check Roughing Insert</p>
+    </td>
+  </tr>
+   <tr>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./Images/PopUp-checkSemiFinish.png'/>
+      <p style="margin: auto;text-align: center;" align="center">Check SemiFinish</p>
+    </td>
+  </tr>
+</table>
+
+
+### 5.Change Tool and Add Reason Concept:
+
+1.The Add Reason feature allows users to document the rationale behind specific actions, ensuring traceability, accountability, and compliance in automation workflows. It helps in error prevention, decision- 
+  making, and industry-standard audit practices, making it a crucial feature for quality control in CNC-based automation. 
+
+2. The Change Tool feature enables users to switch tools efficiently within a CNC system, reducing downtime, human intervention, and ensuring precision in manufacturing. By automating tool changes and linking 
+   them to specific reasons, it optimizes workflow and enhances cost efficiency.
+   
+3. The Custom Reason feature further allows users to provide detailed justifications when predefined reasons are insufficient, adding flexibility and adaptability to the system. This feature aids in data 
+   analysis, regulatory compliance, and enhanced documentation, making it essential for improving machine behavior tracking and process optimization.
+
+   Collectively, these functionalities strengthen automation,logging, and efficiency, aligning with industry standards in manufacturing and automation.
+   
+   <table>
+  <tr>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./Images/aaddReason.png'/>
+      <p style="margin: auto;text-align: center;" align="center">Check InsertIndexing</p>
+    </td>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./Images/changetool-1.png'  />
+      <p style="margin: auto;text-align: center;" align="center">Check Roughing Insert</p>
+    </td>
+  </tr>
+   <tr>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./Images/cunstomreason-1.png'/>
+      <p style="margin: auto;text-align: center;" align="center">Check SemiFinish</p>
+    </td>
+  </tr>
+</table>
+   
+
