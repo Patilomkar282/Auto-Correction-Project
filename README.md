@@ -210,11 +210,11 @@ The home page is the Calibration mode. This page is used to set the initial offs
 <table>
   <tr>
     <td style="text-align: center; vertical-align: top;">
-      <img src="./Images/Calibration_ID.png"/>
+      <img src="./Images/CalibrationNew_ID.png"/>
       <p style="margin: auto;text-align: center;" align="center">ID READINGS</p>
     </td>
     <td style="text-align: center; vertical-align: top;">
-      <img src="./Images/Calibration_OD.png"  />
+      <img src="./Images/CalibrationNew_OD.png"  />
       <p style="margin: auto;text-align: center;" align="center">OD READINGS</p>
     </td>
   </tr>
