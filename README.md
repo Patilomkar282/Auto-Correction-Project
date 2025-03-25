@@ -210,11 +210,11 @@ The home page is the Calibration mode. This page is used to set the initial offs
 <table>
   <tr>
     <td style="text-align: center; vertical-align: top;">
-      <img src="./Images/Calibration_ID.png"/>
+      <img src="./Images/CalibrationNew_ID.png"/>
       <p style="margin: auto;text-align: center;" align="center">ID READINGS</p>
     </td>
     <td style="text-align: center; vertical-align: top;">
-      <img src="./Images/Calibration_OD.png"  />
+      <img src="./Images/CalibrationNew_OD.png"  />
       <p style="margin: auto;text-align: center;" align="center">OD READINGS</p>
     </td>
   </tr>
@@ -337,18 +337,18 @@ Purpose:
    <table>
   <tr>
     <td style="text-align: center; vertical-align: top;">
-      <img src='./Images/aaddReason.png'/>
-      <p style="margin: auto;text-align: center;" align="center">Check InsertIndexing</p>
+      <img src='./Images/addReason.png'/>
+      <p style="margin: auto;text-align: center;" align="center">Adding New Reason</p>
     </td>
     <td style="text-align: center; vertical-align: top;">
       <img src='./Images/changetool-1.png'  />
-      <p style="margin: auto;text-align: center;" align="center">Check Roughing Insert</p>
+      <p style="margin: auto;text-align: center;" align="center">Changing Tool</p>
     </td>
   </tr>
    <tr>
     <td style="text-align: center; vertical-align: top;">
-      <img src='./Images/cunstomreason-1.png'/>
-      <p style="margin: auto;text-align: center;" align="center">Check SemiFinish</p>
+      <img src='./Images/customreason-1.png'/>
+      <p style="margin: auto;text-align: center;" align="center">Adding Custom Reason</p>
     </td>
   </tr>
 </table>
