@@ -229,3 +229,29 @@ The table page shows the data from the database in a table format. The user can 
     </td>
   </tr>
 </table>
+
+
+### 4.OEE Chart Page:
+
+The OEE (Overall Equipment Effectiveness) Chart Page visually represents key performance indicators of a manufacturing or production system. It includes:
+Features:
+   1. Gauge Chart for OEE
+   2. Displays the Overall Equipment Effectiveness (OEE) percentage.
+   3. Uses a color-coded dial to indicate performance levels (Red: Poor, Orange: Average, Green: Good).
+   4. The needle points to the current OEE value (e.g., 80%).
+
+Key Performance Metrics
+   1. Availability: Measures the actual running time vs. planned production time (92.5%).
+   2. Performance: Evaluates production speed relative to the ideal speed (87.8%).
+   3. Quality: Represents the percentage of defect-free products (95.3%).
+   4. Each metric is displayed in a colored card for better visualization.
+
+Purpose:
+   1.Helps monitor production efficiency in real-time.
+   2.Identifies areas of improvement by analyzing availability, performance, and quality.
+   3.Provides a quick overview of machine productivity using an intuitive graphical representation.
+
+  <img src="./images/OEE.png" width=50%>
+
+   
+
