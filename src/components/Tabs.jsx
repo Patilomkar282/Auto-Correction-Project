@@ -114,9 +114,9 @@ useEffect(() => {
     
           socketRef.current.onmessage = async (event) => {
             const data = JSON.parse(event.data);
-            console.log("Exterem:",data.ExtremeShift);
+            console.log("Exterem:",data.Extreme_shift);
            
-            setExtremeShift(data.ExtremeShift);
+            setExtremeShift(data.Extreme_shift);
           } 
   }
 }
@@ -174,12 +174,12 @@ reqdata();
               fontSize: "16px",
               width: "270px",
               marginTop:"-20px",
-              marginLeft: "-180px",
-              position: "relative",
-              left: "-10",
+              marginLeft: "-130px",
+              position: "absolute",
               fontWeight: "lighter",
               borderRadius: "30px",
-              backgroundColor: "#ff4000" // Orange color
+              marginBottom: "50px",
+              backgroundColor:"#ff4000"
             }}
           >
             CURRENT ID READING&nbsp;&nbsp;:&nbsp; {Math.round(current_readings * 1000) / 1000}
@@ -195,11 +195,11 @@ reqdata();
               fontSize: "16px",
               width: "270px",
               marginTop:"-20px",
-              marginLeft: "100px",
+              marginLeft: "-130px",
               position: "absolute",
-              left: "100px",
               fontWeight: "lighter",
-              borderRadius: "30px"
+              borderRadius: "30px",
+              marginBottom: "50px"
             }}
           >
             CURRENT ID READING&nbsp;&nbsp;:&nbsp; {Math.round(current_readings * 1000) / 1000}

@@ -212,13 +212,13 @@ export default function Home() {
 
             if(data.Reason==="True"){
                 setPopMessage({
-                    title: "Reason Adding",
+                    title: "Add Reason",
                                 message: (
                                     <>
                                         <button
                                             className="btn btn-danger mr-[20px]"
                                             onClick={updateReason} 
-                                            style={{ margin: "50px" ,width:"200px",height:"60px" }}
+                                            style={{width:"100px",height:"60px" }}
                                         >
                                             OK
                                         </button>
@@ -277,7 +277,7 @@ export default function Home() {
                 console.log("Toolstatus Received from WebSocket:", toolStatus);
 
                // Handle popup conditions
-             if (toolStatus.TOOL2 === "True") {
+             if (toolStatus.Tool2 === "True") {
                 setmypopup(true);
                 setShowProgress(false);
                 setPopMessage({
@@ -287,7 +287,6 @@ export default function Home() {
                             <button
                                 className="btn btn-danger mr-[20px]"
                                 onClick={() => {
-                                    console.log("Closing popup...");
                                     setmypopup(false);  // Close popup
                                     setTimeout(async () => {
                                         await fetch("http://localhost:3006/updateTool2")
@@ -313,7 +312,7 @@ export default function Home() {
                         </>
                     ),
                 });
-             } else if (toolStatus.TOOL3 === "True") {
+             } else if (toolStatus.Tool3 === "True") {
                 setmypopup(true);
                 setShowProgress(false);
                 setPopMessage({
@@ -338,7 +337,7 @@ export default function Home() {
                                     console.log("Closing popup...");
                                     setmypopup(false);  // Close popup
                                     setTimeout(() => {
-                                        fetch("http://localhost:3006/updateTool2")
+                                        fetch("http://localhost:3006/stillokTool3")
                                             .then(res => res.json())
                                             .then(data => console.log("API Response:", data))
                                             .catch(error => console.error("Fetch Error:", error));
@@ -350,7 +349,7 @@ export default function Home() {
                         </>
                     ),
                 });
-             } else if (toolStatus.TOOL8 === "True") {
+             } else if (toolStatus.Tool8 === "True") {
                 setmypopup(true);
                 setShowProgress(false);
                 setPopMessage({
