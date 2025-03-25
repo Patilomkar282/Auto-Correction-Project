@@ -277,7 +277,7 @@ export default function Home() {
                 console.log("Toolstatus Received from WebSocket:", toolStatus);
 
                // Handle popup conditions
-             if (toolStatus.Tool2 === "True") {
+             if (toolStatus.TOOL2 === "True") {
                 setmypopup(true);
                 setShowProgress(false);
                 setPopMessage({
@@ -312,7 +312,7 @@ export default function Home() {
                         </>
                     ),
                 });
-             } else if (toolStatus.Tool3 === "True") {
+             } else if (toolStatus.TOOL3 === "True") {
                 setmypopup(true);
                 setShowProgress(false);
                 setPopMessage({
@@ -349,7 +349,7 @@ export default function Home() {
                         </>
                     ),
                 });
-             } else if (toolStatus.Tool8 === "True") {
+             } else if (toolStatus.TOOL8 === "True") {
                 setmypopup(true);
                 setShowProgress(false);
                 setPopMessage({
