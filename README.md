@@ -117,6 +117,46 @@ CREATE TABLE Df (
     PRIMARY KEY (ID)
 );
 ```
+4. Table: reasons
+
+| Column Name  | Data Type                           | Description                         |
+| ------------ | ----------------------------------- | ----------------------------------- |
+| `reasons`    | `varchar`                           | Reason added when tool is changed.  |
+| `updated_at` | `timestamp`                         | Time at which reason is added.      |
+| `ID_Reading` | `VARCHAR(50)`                       | Corresponding ID reading.           |
+
+```
+CREATE TABLE reasons (
+    reason VARCHAR(50) NULL,
+    updated_at TIMESTAMP NULL,
+    ID_Reading VARCHAR(20) NULL
+);
+
+```
+
+5. Table: user_logins
+
+| Column Name  | Data Type                           | Description                         |
+| ------------ | ----------------------------------- | ----------------------------------- |
+| `id`         | `varchar`                           | Id of User logged In.               |
+| `username`   | `varchar(50)`                       | Username of the user.               |
+| `logged_in_at`| `bigint`                           | Corresponding LoggeIn Time.         |
+| `logged_out_at`| `bigint`                          | Corresponding LoggeIn Time.         |
+
+```
+CREATE TABLE user_logins (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    logged_in_at BIGINT NULL,
+    logged_out_at BIGINT NULL
+);
+
+```
+
+
+
+
+
 
 4. Triggers to set
 
@@ -252,6 +292,31 @@ Purpose:
    3.Provides a quick overview of machine productivity using an intuitive graphical representation.
 
   <img src="./images/OEE.png" width=50% />
+
+
+  ### 5.Tool change & Add Reason:
+  The Tool change and ADD reason pop shows that when certain number of the job are completed then it should be changed and these two popup prompt to the operator.
+
+
+  <table>
+    <tr>
+      <td style="text-align: center; vertical-align: top;">
+        <img src='./images/changetool.png'/>
+        <p style="margin: auto;text-align: center;" align="center">Table</p>
+      </td>
+      <td style="text-align: center; vertical-align: top;">
+        <img src='./images/reason.png'  />
+        <p style="margin: auto;text-align: center;" align="center">Table Add</p>
+      </td>
+    </tr>
+</table>
+
+
+  
+
+
+
+  
   
 
    
