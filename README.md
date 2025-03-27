@@ -251,7 +251,8 @@ Purpose:
    2.Identifies areas of improvement by analyzing availability, performance, and quality.
    3.Provides a quick overview of machine productivity using an intuitive graphical representation.
 
-  <img src="./images/OEE.png" width=50%>
+  <img src="./images/OEE.png" width=50% />
+  
 
    
 
