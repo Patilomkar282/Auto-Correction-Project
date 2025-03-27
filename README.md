@@ -312,6 +312,33 @@ Purpose:
 </table>
 
 
+### 5.Tool change Flags:
+
+These are Prompt to the operator working on the machine that tells that when certain type number of completed by the machine then Tool2(Roughing), Tool3(SemiFinish), Tool8(InsertIndexing). These flags are visible when the TOOL2, TOOL# & TOOL8 flag in the Field table get True.
+
+<table>
+  <tr>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./images/checkroughing.png'/>
+      <p style="margin: auto;text-align: center;" align="center">Table</p>
+    </td>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./images/checkinsertindex.png'  />
+      <p style="margin: auto;text-align: center;" align="center">Table Add</p>
+    </td>
+  </tr>
+   <tr>
+    <td style="text-align: center; vertical-align: top;">
+      <img src='./images/checkfinish.png'/>
+      <p style="margin: auto;text-align: center;" align="center">Table Delete</p>
+    </td>
+  </tr>
+</table>
+  
+  
+
+
+
   
 
 
